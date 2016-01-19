@@ -4,21 +4,26 @@
 
 Software part
 --------------
+//App
 The user must be able to log in to the portal, using email and password registration.
 The user must be able to register to the portal
 The user must be able to create profile 
 The user must be able to select adjustable range of interest (km in radius)
+The user must be able to see the feed containing events in the range of interest
+The user must be able to receive notifications 
+The user must be able accept/decline invitations
+
+//Event
 The user must be able to create events
 The user must be able to specify “noob” status for the event
 The user must be able to specify route for the event
 The user must be able to specify start time and starting point 
+The user must be able to leave event comments
+The user must be able to send invitations for the events
+
+//Nav
 The user must be able to add POIs
 The user must be able to rate the route with rating 
-The user must be able to see the feed containing events in the range of interest
-The user must be able to leave event comments
-The user must be able to receive notifications 
-The user must be able to send invitations for events
-The user must be able accept/decline invitations
 
 Hardware part
 --------------
