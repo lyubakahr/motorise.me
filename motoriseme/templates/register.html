@@ -1,0 +1,22 @@
+{% if messages %}
+  <div id="notifications">
+  {% for message in messages %}
+    {{ message }}<br />
+  {% endfor %}
+  </div>
+{% endif %}
+
+{% if not user.is_active %}
+<form method="post" action="">
+    {% csrf_token %}
+    <input placeholder="Username" type="text" name="username" required />
+    <br />
+    <input placeholder="Password" type="password" name="password" required />
+    <br />
+    <input type="email" name="email" required placeholder="Enter a valid email address" />
+    <br />
+    <input type="submit" name="submit" value="Регистрирай се" />
+</form>
+{% else %}
+  Вече си логнат.
+{% endif %}
