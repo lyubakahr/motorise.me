@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+import sys 
+import platform as _platform
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -75,17 +77,30 @@ WSGI_APPLICATION = 'motoriseme.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'chepec',
-        'USER': 'root',
-        'PASSWORD': 'abcd1234',
-        'HOST': 'localhost',
-        'PORT': '3306'
-    }
-}
-
+if _platform == 'linux' or _platform == 'linux2':
+	#Linux
+	DATABASES = {
+    	'default': {
+        	'ENGINE': 'mysql.connector.django',
+        	'NAME': 'chepec',
+        	'USER': 'root',
+        	'PASSWORD': 'abcd1234',
+        	'HOST': 'localhost',
+        	'PORT': '3306'
+    	}
+	}
+elif _platform == 'win32':
+   	# Windows... 
+   	DATABASES = {
+   		'default': {
+       	'ENGINE': 'django.db.backends.mysql',
+       	'NAME': 'chepec',
+       	'USER': 'root',
+       	'PASSWORD': 'abcd1234',
+       	'HOST': 'localhost',
+       	'PORT': '3306'
+   		}
+	}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
