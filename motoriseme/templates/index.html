@@ -45,5 +45,15 @@
       <input type="submit" name="submit" value="Карай" />
   </form>
   <br>
-  <a href="/register">Регни се</a>
+  {% if events %}
+    <div id="e">
+    {% for event in events %}
+      {{ event }}
+      {%  if event.creator_id == user.id  %}
+        <a href="delete_event?id={{ event.id }}">x</a>
+      {% endif %}
+      <br />
+    {% endfor %}
+    </div>
+  {% endif %}
 {% endif %}

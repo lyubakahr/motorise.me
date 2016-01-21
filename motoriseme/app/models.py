@@ -18,4 +18,4 @@ class Event(models.Model):
         return cls.objects.all()
 
     def __str__(self):
-        return '{}'.format(self.name)
+        return '{} - Кога: {}, Къде: {}, Какво: {}'.format(self.name, self.date, self.start_point, self.description)

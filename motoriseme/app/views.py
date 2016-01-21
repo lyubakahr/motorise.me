@@ -3,9 +3,22 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from app.models import Event
+from django.shortcuts import redirect
 
 def index(request):
-    return render(request, 'index.html', {})
+    notifications = []
+    if request.user.is_authenticated():
+        return render(request, 'index.html', {'events': Event.objects.all()})
+    else:
+        return render(request, 'index.html', {})
+
+def delete_event(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated():
+            event = Event.objects.get(id=request.GET['id'])
+            if request.user.id == event.creator_id:
+                event.delete()
+    return redirect('/')
 
 def create_event(request):
     print('RECEIVED REQUEST: ' + request.method)
@@ -23,9 +36,9 @@ def create_event(request):
                           creator = request.user)
             event.save()
             notifications.append("Честит сбор.")
-        return render(request, 'index.html', {'messages': notifications})
+        return redirect('/')
     else:
-        return render(request, 'index.html', {'messages': notifications})
+        return redirect('/')
 
 def register(request):
     print('RECEIVED REQUEST: ' + request.method)
@@ -43,7 +56,7 @@ def register(request):
                                         request.POST['email'],
                                         request.POST['password'])
         notifications.append("Регистрира се. Животът е хубав.")
-        return render(request, 'index.html', {'messages': notifications})
+        return redirect('/')
 
 def user_login(request):
     username = request.POST['username']
@@ -53,7 +66,7 @@ def user_login(request):
     if user is not None:
         if user.is_active:
             login(request, user)
-            return render(request, 'index.html', {})
+            return redirect('/')
         else:
             notifications.append(username + " акаунтът е неактивен.")
     else:
@@ -62,4 +75,4 @@ def user_login(request):
 
 def user_logout(request):
     logout(request)
-    return render(request, 'index.html', {})
+    return redirect('/')
