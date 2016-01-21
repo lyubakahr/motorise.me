@@ -14,6 +14,7 @@ import os
 import sys 
 import platform as _platform
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -76,8 +77,7 @@ WSGI_APPLICATION = 'motoriseme.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
-
-if _platform == 'linux' or _platform == 'linux2':
+if _platform.system() == 'Linux':
 	#Linux
 	DATABASES = {
     	'default': {
@@ -89,7 +89,7 @@ if _platform == 'linux' or _platform == 'linux2':
         	'PORT': '3306'
     	}
 	}
-elif _platform == 'win32':
+elif _platform.system() == 'Windows':
    	# Windows... 
    	DATABASES = {
    		'default': {

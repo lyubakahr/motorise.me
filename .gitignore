@@ -1,4 +1,4 @@
 __pycache__
 __init__.pyc
-migration
+migrations
 db.sqlite3

@@ -20,4 +20,40 @@
 {% else %}
   Здравей, {{ user.get_username }}
   <a href="/logout">Махай се</a>
+  <br>
+  <br>
+  <form method="post" action="create_event">
+      {% csrf_token %}
+      <input placeholder="Event name" type="text" name="name" required />
+      <br />
+      <input placeholder="Date" type="date" name="date" required />
+      <br />
+      <input placeholder="Start Point" type="text" name="start_point" required />
+      <br />
+      <input placeholder="Start Point coords" type="text" name="start_point_coordinates" required />
+      <br />
+      <input placeholder="End Point" type="text" name="end_point" />
+      <br />
+      <input placeholder="End Point coords" type="text" name="end_point_coordinates"/>
+      <br />
+      <label for="noob_friendly">Noob friendly?</label>
+      <input type="checkbox" name="noob_friendly">
+      <br />
+      <label for="description">Description</label>
+      <textArea name="description">
+      </textArea>
+      <input type="submit" name="submit" value="Карай" />
+  </form>
+  <br>
+  {% if events %}
+    <div id="e">
+    {% for event in events %}
+      {{ event }}
+      {%  if event.creator_id == user.id  %}
+        <a href="delete_event?id={{ event.id }}">x</a>
+      {% endif %}
+      <br />
+    {% endfor %}
+    </div>
+  {% endif %}
 {% endif %}
