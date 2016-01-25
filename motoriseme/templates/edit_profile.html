@@ -1,0 +1,30 @@
+{% if messages %}
+  <div id="notifications">
+  {% for message in messages %}
+    {{ message }}<br />
+  {% endfor %}
+  </div>
+{% endif %}
+
+{% if not user.is_active %}
+<form method="post" action="">
+    {% csrf_token %}
+    <input placeholder="Old password" type="password" name="old_password" />
+    <br />
+    <input placeholder="New password" type="password" name="new_password" />
+    <br />
+    <input placeholder="Retype new password" type="password" name="retyped_new_password" />
+    <br />
+    <input type="email" name="new_email" required placeholder="Enter a valid email address" />
+    <br />
+    <input type="Text" name="new_first_name" placeholder="First name" />
+    <br />
+    <input type="Text" name="new_nickname" placeholder="Nickname" />
+    <br />
+    <input type="Text" name="new_last_name" placeholder="Last name" />
+    <br />
+    <input type="submit" name="submit" value="Запамети" />
+</form>
+{% else %}
+  Вече си логнат.
+{% endif %}
