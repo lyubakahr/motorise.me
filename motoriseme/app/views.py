@@ -20,13 +20,14 @@ def delete_event(request):
             event = Event.objects.get(id=request.GET['id'])
             if request.user.id == event.creator_id:
                 event.delete()
-                return HttpResponse(content='Event deleted')
+                httpResponse = HttpResponse(content='Event deleted')
             else:
-                return HttpResponse(content='Failed to delete event: not creator of the event')
+                httpResponse = HttpResponse(content='Failed to delete event: not creator of the event')
         else:
-            return HttpResponse(content='Failed to delete event: not authenticated')
+            httpResponse = HttpResponse(content='Failed to delete event: not authenticated')
     else:
-        return HttpResponse(content='Failed to delete event')
+        httpResponse = HttpResponse(content='Failed to delete event')
+    return httpResponse
 
 
 def create_event(request):
@@ -42,11 +43,12 @@ def create_event(request):
                           noob_friendly = request.POST['noob_friendly'],
                           creator = request.user)
             event.save()
-            return HttpResponse(content='Event created')
+            httpResponse = HttpResponse(content='Event created')
         else:
-            return HttpResponse(content="Failed to create event: not authenticated")
+            httpResponse = HttpResponse(content="Failed to create event: not authenticated")
     else:
-        return HttpResponse(content='Failed to create event')
+        httpResponse = HttpResponse(content='Failed to create event')
+    return httpResponse
 
 
 def update_event(request):
@@ -63,33 +65,33 @@ def update_event(request):
                 event.description = request.POST['description']
                 event.noob_friendly = request.POST['noob_friendly']
                 event.save()
-                return HttpResponse(content='Event updated')
+                httpResponse = HttpResponse(content='Event updated')
             else:
-                return HttpResponse(content='Failed to edit event: not creator of the event')
+                httpResponse = HttpResponse(content='Failed to edit event: not creator of the event')
     else:
-        return HttpResponse(content='Failed to update event')
+        httpResponse = HttpResponse(content='Failed to update event')
+    return httpResponse
 
 
 def update_rider(request):
-    print('RECEIVED REQUEST: ' + request.method)
-    notifications = []
     if request.method == 'POST':
         if not request.user.is_authenticated():
-            notifications.append("Нямате текуща сесия.")
-            return render(request, 'app/index.html', {'messages': notifications})
-        user = request.user
-        user.username = request.POST['username']
-        user.email = request.POST['email']
-        user.set_password (request.POST['password'])
-        user.save()
-        rider = Rider.get_rider(id=user.id)
-        rider.first_name = request.POST['first_name']
-        rider.nickname = request.POST['nickname']
-        rider.last_name = request.POST['last_name']
-        rider.save()
-        return HttpResponse(content='Rider updated')
+            httpResponse = HttpResponse(content='Failed to update rider: not authenticated')
+        else:
+            user = request.user
+            user.username = request.POST['username']
+            user.email = request.POST['email']
+            user.set_password (request.POST['password'])
+            user.save()
+            rider = Rider.get_rider(id=user.id)
+            rider.first_name = request.POST['first_name']
+            rider.nickname = request.POST['nickname']
+            rider.last_name = request.POST['last_name']
+            rider.save()
+            httpResponse = HttpResponse(content='Rider updated')
     else:
-        return HttpResponse(content='Failed to update rider')
+        httpResponse = HttpResponse(content='Failed to update rider')
+    return httpResponse
 
 
 def register_rider(user, first_name, nickname, last_name):
