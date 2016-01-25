@@ -121,7 +121,8 @@ def get_user_info(request):
 
 
 def get_event_info(request):
-    event = Event.objects.raw('SELECT * FROM app_event WHERE user_id = ' + str(user.id))
+    event_id = request.GET['id']
+    event = Event.objects.raw('SELECT * FROM app_event WHERE event_id = ' + str(event.id))
     return HttpResponse(content=Event.to_json(event))
 
 
