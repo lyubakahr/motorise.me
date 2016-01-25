@@ -98,7 +98,7 @@ def register_rider(user, first_name, nickname, last_name):
 
 
 def get_rider(request):
-    rider = [Rider.get_rider(id=1)]
+    rider = [Rider.get_rider(id=request.user.id)]
     return HttpResponse(content=Rider.to_json(rider))
 
 
