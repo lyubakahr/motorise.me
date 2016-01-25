@@ -40,8 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app',
-    'rest_framework'
+    'rest_framework',
+    'app'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -79,29 +79,29 @@ WSGI_APPLICATION = 'motoriseme.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 if _platform.system() == 'Linux':
-	#Linux
-	DATABASES = {
-    	'default': {
-        	'ENGINE': 'mysql.connector.django',
-        	'NAME': 'chepec',
-        	'USER': 'root',
-        	'PASSWORD': 'abcd1234',
-        	'HOST': 'localhost',
-        	'PORT': '3306'
-    	}
-	}
+    #Linux
+    DATABASES = {
+        'default': {
+            'ENGINE': 'mysql.connector.django',
+            'NAME': 'chepec',
+            'USER': 'root',
+            'PASSWORD': 'abcd1234',
+            'HOST': 'localhost',
+            'PORT': '3306'
+        }
+    }
 elif _platform.system() == 'Windows':
    	# Windows... 
    	DATABASES = {
-   		'default': {
-       	'ENGINE': 'django.db.backends.mysql',
-       	'NAME': 'chepec',
-       	'USER': 'root',
-       	'PASSWORD': 'abcd1234',
-       	'HOST': 'localhost',
-       	'PORT': '3306'
-   		}
-	}
+        'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'chepec',
+        'USER': 'root',
+        'PASSWORD': 'abcd1234',
+        'HOST': 'localhost',
+        'PORT': '3306'
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
@@ -121,6 +121,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
+    'PAGE_SIZE': 10
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/

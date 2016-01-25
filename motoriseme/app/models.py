@@ -2,6 +2,21 @@ from django.db import models
 from datetime import datetime
 from django.contrib.auth.models import User
 
+class Rider(models.Model):
+    user = models.OneToOneField(User, primary_key=True)
+    first_name = models.CharField(max_length=30, null=True)
+    nickname = models.CharField(max_length=30, blank=True)
+    last_name = models.CharField(max_length=30, blank=True)
+
+    @classmethod
+    def get_all(cls):
+        return cls.objects.all()
+
+    @classmethod
+    def get_rider(cls, id):
+        return cls.objects.get(user_id__exact=id)
+
+
 class Event(models.Model):
     name = models.CharField(max_length = 100)
     date = models.DateTimeField(default = datetime.now())
