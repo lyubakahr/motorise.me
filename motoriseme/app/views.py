@@ -16,6 +16,7 @@ def index(request):
 
 def delete_event(request):
     if request.method == 'GET':
+        print(request)
         if request.user.is_authenticated():
             event = Event.objects.get(id=request.GET['id'])
             if request.user.id == event.creator_id:
@@ -42,6 +43,27 @@ def create_event(request):
         return redirect('/')
     else:
         return redirect('/')
+
+
+def update_rider(request):
+    print('RECEIVED REQUEST: ' + request.method)
+    notifications = []
+    if request.method == 'POST':
+        if not request.user.is_authenticated():
+            notifications.append("Нямате текуща сесия.")
+            return render(request, 'app/index.html', {'messages': notifications})
+        user = request.user
+        user.username = request.POST['username']
+        user.email = request.POST['email']
+        user.set_password (request.POST['password'])
+        user.save()
+        rider = Rider.get_rider(id=user.id)
+        rider.first_name = request.POST['first_name']
+        rider.nickname = request.POST['nickname']
+        rider.last_name = request.POST['last_name']
+        rider.save()
+        return HttpResponse(content='Данните за потребителя са променени успешно')
+
 
 def register_rider(user, first_name, nickname, last_name):
     rider = Rider(user, first_name, nickname, last_name)
@@ -148,6 +170,6 @@ def get_all_user_comments(request):
 
 
 def get_all_event_comments(request):
-    # fix event id..
-    comments = Comment.objects.raw('SELECT * FROM app_comment WHERE event_id = ' + str(user.id))
+    event_id = request.GET['id']
+    comments = Comment.objects.raw('SELECT * FROM app_comment WHERE event_id = ' + str(event_id))
     return HttpResponse(content=Comment.to_json(comments))
