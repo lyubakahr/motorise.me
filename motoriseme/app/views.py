@@ -98,8 +98,11 @@ def register_rider(user, first_name, nickname, last_name):
 
 
 def get_rider(request):
-    rider = [Rider.get_rider(id=request.GET['id'])]
-    return HttpResponse(content=Rider.to_json(rider))
+    rider = Rider.get_rider(id=request.GET['id'])
+    if rider is not None:
+        return HttpResponse(content=Rider.to_json([rider]))
+    else:
+        return HttpResponse(content='Cannot find rider')
 
 
 def register(request):

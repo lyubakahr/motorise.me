@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^update_event$', views.update_event, name='update_event'),
     url(r'^delete_event$', views.delete_event, name='delete_event'),
     url(r'^user_info$', views.get_user_info, name='user_info'),
+    url(r'^get_rider$', views.get_rider, name='get_rider'),
     url(r'^update_rider$', views.update_rider, name='update_rider'),
     url(r'^user_events$', views.get_user_events, name='user_events'),
     url(r'^all_user_comments$', views.get_all_user_comments, name='all_user_comments'),
