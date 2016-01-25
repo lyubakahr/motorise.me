@@ -16,7 +16,10 @@ class Rider(models.Model):
 
     @classmethod
     def get_rider(cls, id):
-        return cls.objects.get(user_id=id)
+        try:
+            return cls.objects.get(user_id=id)
+        except:
+            return None
 
     @classmethod
     def to_json(cls, riders):
@@ -51,7 +54,10 @@ class Event(models.Model):
 
     @classmethod
     def get_event(cls, event_id):
-        return cls.objects.get(id=event_id)
+        try:
+            return cls.objects.get(id=event_id)
+        except:
+            return None
 
     def __str__(self):
         return '{} - Кога: {}, Къде: {}, Какво: {}'.format(self.name, self.date, self.start_point, self.description)
@@ -87,7 +93,10 @@ class Comment(models.Model):
 
     @classmethod
     def get_comment(cls, comment_id):
-        return cls.objects.get(id=comment_id)
+        try:
+            return cls.objects.get(id=comment_id)
+        except:
+            return None
 
     @classmethod
     def to_json(cls, comments):

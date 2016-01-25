@@ -16,12 +16,17 @@ def index(request):
 
 def delete_event(request):
     if request.method == 'GET':
-        print(request)
         if request.user.is_authenticated():
             event = Event.objects.get(id=request.GET['id'])
             if request.user.id == event.creator_id:
                 event.delete()
-    return HttpResponse(content='Event deleted')
+                return HttpResponse(content='Event deleted')
+            else:
+                return HttpResponse(content='Failed to delete event: not creator of the event')
+        else:
+            return HttpResponse(content='Failed to delete event: not authenticated')
+    else:
+        return HttpResponse(content='Failed to delete event')
 
 
 def create_event(request):
@@ -37,9 +42,32 @@ def create_event(request):
                           noob_friendly = request.POST['noob_friendly'],
                           creator = request.user)
             event.save()
-        return HttpResponse(content='Event created')
+            return HttpResponse(content='Event created')
+        else:
+            return HttpResponse(content="Failed to create event: not authenticated")
     else:
         return HttpResponse(content='Failed to create event')
+
+
+def update_event(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated():
+            event = Event.get_event(id=request.POST['event_id'])
+            if request.user.id == event.creator_id:
+                event.name = request.POST['name']
+                event.date = request.POST['date']
+                event.start_point = request.POST['start_point']
+                event.start_point_coordinates = request.POST['start_point_coordinates']
+                event.end_point = request.POST['end_point']
+                event.end_point_coordinates = request.POST['end_point_coordinates']
+                event.description = request.POST['description']
+                event.noob_friendly = request.POST['noob_friendly']
+                event.save()
+                return HttpResponse(content='Event updated')
+            else:
+                return HttpResponse(content='Failed to edit event: not creator of the event')
+    else:
+        return HttpResponse(content='Failed to update event')
 
 
 def update_rider(request):
@@ -60,6 +88,8 @@ def update_rider(request):
         rider.last_name = request.POST['last_name']
         rider.save()
         return HttpResponse(content='Rider updated')
+    else:
+        return HttpResponse(content='Failed to update rider')
 
 
 def register_rider(user, first_name, nickname, last_name):
@@ -122,10 +152,13 @@ def get_user_info(request):
     return HttpResponse(content=Rider.to_json(rider))
 
 
-def get_event_info(request):
+def read_event(request):
     event_id = request.GET['id']
-    event = [Event.get_event(event_id)]
-    return HttpResponse(content=Event.to_json(event))
+    event = Event.get_event(event_id)
+    if event is not None:
+        return HttpResponse(content=Event.to_json([event]))
+    else:
+        return HttpResponse(content='Cannot find event')
 
 
 def get_user_events(request):
@@ -134,7 +167,7 @@ def get_user_events(request):
     return HttpResponse(content=Event.to_json(events))
 
 
-def get_all_events(request):
+def read_all_events(request):
     return HttpResponse(content=Event.to_json(Event.get_all()))
 
 
