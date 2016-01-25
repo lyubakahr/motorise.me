@@ -18,5 +18,8 @@ urlpatterns = [
     url(r'^update_rider$', views.update_rider, name='update_rider'),
     url(r'^all_user_comments$', views.get_all_user_comments, name='all_user_comments'),
     url(r'^all_event_comments$', views.get_all_event_comments, name='all_event_comments'),
+    url(r'^post_comment$', views.post_comment, name='post_comment'),
+    url(r'^edit_comment$', views.edit_comment, name='edit_comment'),
+    url(r'^delete_comment$', views.delete_comment, name='delete_comment'),
 ]
 

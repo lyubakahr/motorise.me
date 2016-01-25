@@ -20,14 +20,14 @@ def delete_event(request):
             event = Event.objects.get(id=request.GET['id'])
             if request.user.id == event.creator_id:
                 event.delete()
-                httpResponse = HttpResponse(content='Event deleted')
+                httpResponseContent = 'Event deleted'
             else:
-                httpResponse = HttpResponse(content='Failed to delete event: not creator of the event')
+                httpResponseContent = 'Failed to delete event: not creator of the event'
         else:
-            httpResponse = HttpResponse(content='Failed to delete event: not authenticated')
+            httpResponseContent = 'Failed to delete event: not authenticated'
     else:
-        httpResponse = HttpResponse(content='Failed to delete event')
-    return httpResponse
+        httpResponseContent = 'Failed to delete event'
+    return HttpResponse(content=httpResponseContent)
 
 
 def create_event(request):
@@ -43,12 +43,12 @@ def create_event(request):
                           noob_friendly = request.POST['noob_friendly'],
                           creator = request.user)
             event.save()
-            httpResponse = HttpResponse(content='Event created')
+            httpResponseContent = 'Event created'
         else:
-            httpResponse = HttpResponse(content="Failed to create event: not authenticated")
+            httpResponseContent = "Failed to create event: not authenticated"
     else:
-        httpResponse = HttpResponse(content='Failed to create event')
-    return httpResponse
+        httpResponseContent = 'Failed to create event'
+    return HttpResponse(content=httpResponseContent)
 
 
 def update_event(request):
@@ -65,18 +65,18 @@ def update_event(request):
                 event.description = request.POST['description']
                 event.noob_friendly = request.POST['noob_friendly']
                 event.save()
-                httpResponse = HttpResponse(content='Event updated')
+                httpResponseContent = 'Event updated'
             else:
-                httpResponse = HttpResponse(content='Failed to edit event: not creator of the event')
+                httpResponseContent = 'Failed to edit event: not creator of the event'
     else:
-        httpResponse = HttpResponse(content='Failed to update event')
-    return httpResponse
+        httpResponseContent = 'Failed to update event'
+    return HttpResponse(content=httpResponseContent)
 
 
 def update_rider(request):
     if request.method == 'POST':
         if not request.user.is_authenticated():
-            httpResponse = HttpResponse(content='Failed to update rider: not authenticated')
+            httpResponseContent = 'Failed to update rider: not authenticated'
         else:
             user = request.user
             user.username = request.POST['username']
@@ -88,10 +88,10 @@ def update_rider(request):
             rider.nickname = request.POST['nickname']
             rider.last_name = request.POST['last_name']
             rider.save()
-            httpResponse = HttpResponse(content='Rider updated')
+            httpResponseContent = 'Rider updated'
     else:
-        httpResponse = HttpResponse(content='Failed to update rider')
-    return httpResponse
+        httpResponseContent = 'Failed to update rider'
+    return HttpResponse(content=httpResponseContent)
 
 
 def register_rider(user, first_name, nickname, last_name):
@@ -186,3 +186,56 @@ def get_all_event_comments(request):
     event_id = request.GET['id']
     comments = Comment.get_event_comments(event_id)
     return HttpResponse(content=Comment.to_json(comments))
+
+
+def post_comment(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated():
+            event = Event.get_event(request.POST['event_id'])
+            reply = request.POST['reply']
+            if not reply:
+                reply = None
+            comment = Comment(event = event,
+                              poster = request.user,
+                              content = request.POST['content'],
+                              reply = reply)
+            comment.save()
+            httpResponseContent = 'Comment posted'
+        else:
+            httpResponseContent = "Failed to post comment: not authenticated"
+    else:
+        httpResponseContent = 'Failed to post comment'
+    return HttpResponse(content=httpResponseContent)
+
+
+def edit_comment(request):
+    if request.method == 'POST':
+        if not request.user.is_authenticated():
+            httpResponseContent = 'Failed to edit comment: not authenticated'
+        else:
+            comment = Comment.get_comment(request.POST['comment_id'])
+            if comment is None:
+                httpResponseContent = "Failed to edit comment: could not find comment"
+            else:
+                comment.content = request.POST['content']
+                comment.save()
+                httpResponseContent = 'Comment edited'
+    else:
+        httpResponseContent = 'Failed to edit comment'
+    return HttpResponse(content=httpResponseContent)
+
+
+def delete_comment(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated():
+            comment = Comment.objects.get(id=request.GET['id'])
+            if request.user.id == comment.poster_id:
+                comment.delete()
+                httpResponseContent = 'Comment deleted'
+            else:
+                httpResponseContent = 'Failed to delete comment: not poster of the comment'
+        else:
+            httpResponseContent = 'Failed to delete comment: not authenticated'
+    else:
+        httpResponseContent = 'Failed to delete comment'
+    return HttpResponse(content=httpResponseContent)
