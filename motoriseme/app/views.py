@@ -151,7 +151,7 @@ def user_logout(request):
 
 def get_user_info(request):
     user = request.user
-    rider = Rider.objects.raw('SELECT * FROM app_rider WHERE user_id = ' + str(user.id))
+    rider = Rider.get_rider(user.id)
     return HttpResponse(content=Rider.to_json(rider))
 
 
@@ -164,9 +164,9 @@ def read_event(request):
         return HttpResponse(content='Cannot find event')
 
 
-def get_user_events(request):
+def read_user_events(request):
     user = request.user
-    events = Event.objects.raw('SELECT * FROM app_event WHERE creator_id = ' + str(user.id))
+    events = Event.get_user_events(user.id)
     return HttpResponse(content=Event.to_json(events))
 
 
@@ -176,11 +176,11 @@ def read_all_events(request):
 
 def get_all_user_comments(request):
     user = request.user
-    comments = Comment.objects.raw('SELECT * FROM app_comment WHERE poster_id = ' + str(user.id))
+    comments = Comment.get_user_comments(user.id)
     return HttpResponse(content=Comment.to_json(comments))
 
 
 def get_all_event_comments(request):
     event_id = request.GET['id']
-    comments = Comment.objects.raw('SELECT * FROM app_comment WHERE event_id = ' + str(event_id))
+    comments = Comment.get_event_comments(event_id)
     return HttpResponse(content=Comment.to_json(comments))

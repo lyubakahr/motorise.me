@@ -59,6 +59,10 @@ class Event(models.Model):
         except:
             return None
 
+    @classmethod
+    def get_user_events(cls, user_id):
+        return Event.objects.raw('SELECT * FROM app_event WHERE creator_id = ' + str(user_id))
+
     def __str__(self):
         return '{} - Кога: {}, Къде: {}, Какво: {}'.format(self.name, self.date, self.start_point, self.description)
 
@@ -97,6 +101,14 @@ class Comment(models.Model):
             return cls.objects.get(id=comment_id)
         except:
             return None
+
+    @classmethod
+    def get_user_comments(cls, user_id):
+        return Comment.objects.raw('SELECT * FROM app_comment WHERE poster_id = ' + str(user_id))
+
+    @classmethod
+    def get_event_comments(cls, event_id):
+        return Comment.objects.raw('SELECT * FROM app_comment WHERE event_id = ' + str(event_id))
 
     @classmethod
     def to_json(cls, comments):
