@@ -2,8 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from app.models import Rider
-from app.models import Event
+from app.models import Rider, Event, Comment
 from django.shortcuts import redirect
 
 
@@ -119,3 +118,30 @@ def get_user_info(request):
     user = request.user
     rider = Rider.objects.raw('SELECT * FROM app_rider WHERE user_id = ' + str(user.id))
     return HttpResponse(content=Rider.to_json(rider))
+
+
+def get_event_info(request):
+    event = Event.objects.raw('SELECT * FROM app_event WHERE user_id = ' + str(user.id))
+    return HttpResponse(content=Event.to_json(event))
+
+
+def get_user_events(request):
+    user = request.user
+    events = Event.objects.raw('SELECT * FROM app_event WHERE creator_id = ' + str(user.id))
+    return HttpResponse(content=Event.to_json(events))
+
+
+def get_all_events(request):
+    return HttpResponse(content=Event.to_json(Event.get_all()))
+
+
+def get_all_user_comments(request):
+    user = request.user
+    comments = Comment.objects.raw('SELECT * FROM app_comment WHERE poster_id = ' + str(user.id))
+    return HttpResponse(content=Comment.to_json(comments))
+
+
+def get_all_event_comments(request):
+    # fix event id..
+    comments = Comment.objects.raw('SELECT * FROM app_comment WHERE event_id = ' + str(user.id))
+    return HttpResponse(content=Comment.to_json(comments))
