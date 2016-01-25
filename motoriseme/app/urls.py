@@ -9,8 +9,6 @@ urlpatterns = [
     url(r'^logout$', views.user_logout, name='logout'),
     url(r'^create_event$', views.create_event, name='create_event'),
     url(r'^delete_event$', views.delete_event, name='delete_event'),
-    # need to check DELETE method ...
-    url(r'^delete_event$', views.delete_event, name='delete_event'),
     url(r'^user_info$', views.get_user_info, name='user_info'),
     url(r'^user_events$', views.get_user_events, name='user_events'),
     url(r'^all_events$', views.get_all_events, name='all_events'),
