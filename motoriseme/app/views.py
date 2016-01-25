@@ -73,7 +73,7 @@ def register(request):
                        request.POST['nickname'],
                        request.POST['last_name'])
         notifications.append('Регистрира се. Животът е хубав.')
-        return redirect('/')
+        return render(request, 'app/index.html', {'messages': notifications})
 
 
 def user_login(request):
