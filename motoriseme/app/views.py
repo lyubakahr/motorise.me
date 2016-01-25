@@ -21,12 +21,10 @@ def delete_event(request):
             event = Event.objects.get(id=request.GET['id'])
             if request.user.id == event.creator_id:
                 event.delete()
-    return redirect('/')
+    return HttpResponse(content='Event deleted')
 
 
 def create_event(request):
-    print('RECEIVED REQUEST: ' + request.method)
-    notifications = []
     if request.method == 'POST':
         if request.user.is_authenticated():
             event = Event(name = request.POST['name'],
@@ -39,10 +37,9 @@ def create_event(request):
                           noob_friendly = request.POST['noob_friendly'],
                           creator = request.user)
             event.save()
-            notifications.append("Честит сбор.")
-        return redirect('/')
+        return HttpResponse(content='Event created')
     else:
-        return redirect('/')
+        return HttpResponse(content='Failed to create event')
 
 
 def update_rider(request):
@@ -62,7 +59,7 @@ def update_rider(request):
         rider.nickname = request.POST['nickname']
         rider.last_name = request.POST['last_name']
         rider.save()
-        return HttpResponse(content='Данните за потребителя са променени успешно')
+        return HttpResponse(content='Rider updated')
 
 
 def register_rider(user, first_name, nickname, last_name):
@@ -116,28 +113,6 @@ def user_login(request):
 
 def user_logout(request):
     logout(request)
-    return redirect('/')
-
-
-def user_edit(request):
-    print('RECEIVED REQUEST: ' + request.method)
-    notifications = []
-    if not request.user.is_authenticated():
-        notifications.append('Трябва да имате активна сесия, за да редактирате профил.')
-        return render(request, 'index.html', {'messages': notifications})
-
-    new_email = request.POST['new_email']
-    new_first_name = request.POST['new_first_name']
-    new_nickname = request.POST['new_nickname']
-    new_last_name = request.POST['new_last_name']
-    
-    old_password = request.POST['old_password']
-    new_password = request.POST['new_password']
-    retyped_new_password = request.POST['retyped_new_password']
-
-    user = request.user
-
-    notifications.append('Регистрира се. Животът е хубав.')
     return redirect('/')
 
 
