@@ -49,6 +49,10 @@ class Event(models.Model):
     def get_all(cls):
         return cls.objects.all()
 
+    @classmethod
+    def get_event(cls, event_id):
+        return cls.objects.get(id=event_id)
+
     def __str__(self):
         return '{} - Кога: {}, Къде: {}, Какво: {}'.format(self.name, self.date, self.start_point, self.description)
 
@@ -82,8 +86,8 @@ class Comment(models.Model):
         return cls.objects.all()
 
     @classmethod
-    def get_comment(cls, id):
-        return cls.objects.get(id=id)
+    def get_comment(cls, comment_id):
+        return cls.objects.get(id=comment_id)
 
     @classmethod
     def to_json(cls, comments):

@@ -48,6 +48,11 @@ def register_rider(user, first_name, nickname, last_name):
     rider.save()
 
 
+def get_rider(request):
+    rider = [Rider.get_rider(id=1)]
+    return HttpResponse(content=Rider.to_json(rider))
+
+
 def register(request):
     print('RECEIVED REQUEST: ' + request.method)
     notifications = []
@@ -122,7 +127,7 @@ def get_user_info(request):
 
 def get_event_info(request):
     event_id = request.GET['id']
-    event = Event.objects.raw('SELECT * FROM app_event WHERE event_id = ' + str(event.id))
+    event = [Event.get_event(event_id)]
     return HttpResponse(content=Event.to_json(event))
 
 
