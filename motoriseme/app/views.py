@@ -8,9 +8,9 @@ from django.shortcuts import redirect
 def index(request):
     notifications = []
     if request.user.is_authenticated():
-        return render(request, 'index.html', {'events': Event.objects.all()})
+        return render(request, 'app/index.html', {'events': Event.objects.all()})
     else:
-        return render(request, 'index.html', {})
+        return render(request, 'app/index.html', {})
 
 def delete_event(request):
     if request.method == 'GET':
@@ -47,11 +47,11 @@ def register(request):
         if request.user.is_authenticated():
             notifications.append("Вече сте логнат.")
             return redirect('/')
-        return render(request, 'register.html', {})
+        return render(request, 'app/register.html', {})
     else:
         if request.user.is_authenticated():
             notifications.append("Вече сте логнат.")
-            return render(request, 'index.html', {'messages': notifications})
+            return render(request, 'app/index.html', {'messages': notifications})
         user = User.objects.create_user(request.POST['username'],
                                         request.POST['email'],
                                         request.POST['password'])
@@ -71,7 +71,7 @@ def user_login(request):
             notifications.append(username + " акаунтът е неактивен.")
     else:
         notifications.append("Невалидно име или парола.")
-        return render(request, 'index.html', {'messages': notifications})
+        return render(request, 'app/index.html', {'messages': notifications})
 
 def user_logout(request):
     logout(request)
