@@ -1,12 +1,13 @@
 from django.db import models
 from datetime import datetime
 from django.contrib.auth.models import User
+import json
 
 class Rider(models.Model):
     user = models.OneToOneField(User, primary_key=True)
     first_name = models.CharField(max_length=30, null=True)
-    nickname = models.CharField(max_length=30, blank=True)
-    last_name = models.CharField(max_length=30, blank=True)
+    nickname = models.CharField(max_length=30, null=True)
+    last_name = models.CharField(max_length=30, null=True)
 
     @classmethod
     def get_all(cls):
@@ -14,7 +15,22 @@ class Rider(models.Model):
 
     @classmethod
     def get_rider(cls, id):
-        return cls.objects.get(user_id__exact=id)
+        return cls.objects.get(user_id=id)
+
+    @classmethod
+    def to_json(cls, riders):
+        context = []
+        for rider in riders:
+            json_rider = {
+                'id': rider.user.id,
+                'username': rider.user.username,
+                'email': rider.user.email,
+                'first_name': rider.first_name,
+                'nickname': rider.nickname,
+                'last_name': rider.last_name
+            }
+            context.append(json_rider)
+        return json.dumps(context)
 
 
 class Event(models.Model):

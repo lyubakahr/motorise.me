@@ -5,10 +5,6 @@ from django.contrib.auth.models import User
 from app.models import Rider
 from app.models import Event
 from django.shortcuts import redirect
-from rest_framework import viewsets
-from rest_framework.renderers import JSONRenderer
-from rest_framework.parsers import JSONParser
-from app.serializers import RiderSerializer
 
 
 def index(request):
@@ -118,19 +114,8 @@ def user_edit(request):
     notifications.append('Регистрира се. Животът е хубав.')
     return redirect('/')
 
-class JSONResponse(HttpResponse):
-    def __init__(self, data, **kwargs):
-        content = JSONRenderer().render(data)
-        kwargs['content_type'] = 'application/json'
-        super(JSONResponse, self).__init__(content, **kwargs)
-
-class RiderViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = RiderSerializer
 
 def get_user_info(request):
     user = request.user
-    rider = Rider.objects.raw('SELECT * FROM app_rider WHERE user_id = ' + str(user.id))[0]
-    serializer = RiderSerializer(rider)
-    content = JSONRenderer().render(serializer.data)
-    return JSONResponse(serializer.data)
+    rider = Rider.objects.raw('SELECT * FROM app_rider WHERE user_id = ' + str(user.id))
+    return HttpResponse(content=Rider.to_json(rider))
