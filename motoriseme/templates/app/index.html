@@ -1,0 +1,181 @@
+{% extends "base_app.html" %}
+
+{% block content %}
+
+{% if messages %}
+  <div id="notifications">
+  {% for message in messages %}
+    {{ message }}<br />
+  {% endfor %}
+  </div>
+{% endif %}
+
+{% if not user.is_active %}
+<form method="post" action="login">
+    {% csrf_token %}
+
+    <div class="row">
+      <div class="small-4 columns">
+        <h1>Логин</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="small-4 columns">
+        <input placeholder="Username" type="text" name="username" required />
+      </div>
+    </div>
+    <div class="row">
+      <div class="small-4 columns">
+        <input placeholder="Password" type="password" name="password" required />
+      </div>
+    </div>
+    <div class="row">
+      <div class="small-4 columns">
+        <input type="submit" name="submit" value="Логни се" />
+        <a data-open="registerFormModal">Регни се</a>
+      </div>
+    </div>
+</form>
+
+<div class="reveal" id="registerFormModal" data-reveal>
+  {% if not user.is_active %}
+  <form method="post" action="/register">
+    {% csrf_token %}
+    <h3>Регистрирай се</h3>
+    <div class="row">
+      <div class="small-12 columns">
+        <input placeholder="Username" type="text" name="username" required />
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="small-12 columns">
+        <input placeholder="Password" type="password" name="password" required />
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="small-12 columns">
+        <input type="email" name="email" required placeholder="Enter a valid email address" />
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="small-12 columns">
+        <input type="Text" name="first_name" placeholder="First name" />
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="small-12 columns">
+        <input type="Text" name="nickname" placeholder="Nickname" />
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="small-12 columns">
+        <input type="Text" name="last_name" placeholder="Last name" />
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="small-12 columns">
+        <input class="medium button" type="submit" name="submit" value="Регистрирай се" />
+      </div>
+    </div>
+  </form>
+  {% else %}
+    Вече си логнат.
+  {% endif %}
+</div>
+{% else %}
+  <div class="row">
+    <div class="small-4 columns">
+      Здравей, {{ user.get_username }}
+      <a href="/logout">Махай се</a>
+    </div>
+  </div>
+  <div class="row">
+    <a class="large button" data-open="eventFormModal">Организирай каране с други хора</a>
+  </div>
+  <div class="reveal" id="eventFormModal" data-reveal>
+    <form method="post" action="create_event">
+        {% csrf_token %}
+        <h3>Карай с други хора</h3>
+        <div class="row">
+          <div class="small-12 columns">
+            <input placeholder="Event name" type="text" name="name" required />
+          </div>
+        </div>
+        <div class="row">
+          <div class="small-12 columns">
+            <input placeholder="Date" type="date" name="date" required />
+          </div>
+        </div>
+        <div class="row">
+          <div class="small-12 columns">
+            <input placeholder="Start Point" type="text" name="start_point" required />
+          </div>
+        </div>
+        <div class="row">
+          <div class="small-12 columns">
+            <input placeholder="Start Point coords" type="text" name="start_point_coordinates" required />
+          </div>
+        </div>
+        <div class="row">
+          <div class="small-12 columns">
+            <input placeholder="End Point" type="text" name="end_point" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="small-12 columns">
+            <input placeholder="End Point coords" type="text" name="end_point_coordinates"/>
+          </div>
+        </div>
+        <div class="row">
+          <div class="small-12 columns">
+            <label for="noob_friendly">Noob friendly?</label>
+            <input type="hidden" name="noob_friendly" value="0" />
+            <input type="checkbox" name="noob_friendly" value="1">
+          </div>
+        </div>
+        <div class="row">
+          <div class="small-12 columns">
+            <label for="description">Description</label>
+            <textArea name="description"></textArea>
+          </div>
+        </div>
+        <div class="row">
+          <div class="small-12 columns">
+            <input type="submit" name="submit" value="Карай" />
+          </div>
+        </div>
+    </form>
+  </div>
+
+  {% if events %}
+    {% for event in events %}
+        <div class="row">
+          <div class="small-5 columns">
+            <h4>{{ event.name }}</h4>
+          </div>
+          <div class="small-6 columns">
+            <p>{{ event.date }}</p>
+          </div>
+          <div class="small-1 columns">
+            {%  if event.creator_id == user.id  %}
+              <a href="delete_event?id={{ event.id }}" class="medium alert button">Destory</a><br/>
+            {% endif %}
+          </div>
+        </div>
+        <div class="row">
+          <div class="small-12 columns">
+            <p>{{ event.description }}</p>
+          </div>
+        </div>
+        <hr>
+    {% endfor %}
+  {% endif %}
+{% endif %}
+
+{% endblock %}

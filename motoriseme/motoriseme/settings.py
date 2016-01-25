@@ -78,29 +78,29 @@ WSGI_APPLICATION = 'motoriseme.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 if _platform.system() == 'Linux':
-	#Linux
-	DATABASES = {
-    	'default': {
-        	'ENGINE': 'mysql.connector.django',
-        	'NAME': 'chepec',
-        	'USER': 'root',
-        	'PASSWORD': 'abcd1234',
-        	'HOST': 'localhost',
-        	'PORT': '3306'
-    	}
-	}
+    #Linux
+    DATABASES = {
+        'default': {
+            'ENGINE': 'mysql.connector.django',
+            'NAME': 'chepec',
+            'USER': 'root',
+            'PASSWORD': 'abcd1234',
+            'HOST': 'localhost',
+            'PORT': '3306'
+        }
+    }
 elif _platform.system() == 'Windows':
    	# Windows... 
    	DATABASES = {
-   		'default': {
-       	'ENGINE': 'django.db.backends.mysql',
-       	'NAME': 'chepec',
-       	'USER': 'root',
-       	'PASSWORD': 'abcd1234',
-       	'HOST': 'localhost',
-       	'PORT': '3306'
-   		}
-	}
+        'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'chepec',
+        'USER': 'root',
+        'PASSWORD': 'abcd1234',
+        'HOST': 'localhost',
+        'PORT': '3306'
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
@@ -138,4 +138,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_ROOT = ''
+STATIC_URL = '/assets/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'templates/assets')]

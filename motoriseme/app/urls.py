@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 
 from . import views
 
@@ -11,6 +11,5 @@ urlpatterns = [
     url(r'^delete_event', views.delete_event, name='delete_event'),
 
     # REST urls start here
-
     url(r'^user_info', views.get_user_info, name='user_info'),
 ]
