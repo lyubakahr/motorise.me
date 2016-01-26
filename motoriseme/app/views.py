@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from app.models import Rider, Event, Comment
+from app.models import Rider, Event, Comment, Notification, Motorbike
 from django.shortcuts import redirect
 
 
@@ -20,12 +20,17 @@ def delete_event(request):
             event = Event.objects.get(id=request.GET['id'])
             if request.user.id == event.creator_id:
                 event.delete()
-    return redirect('/')
+                httpResponseContent = 'Event deleted'
+            else:
+                httpResponseContent = 'Failed to delete event: not creator of the event'
+        else:
+            httpResponseContent = 'Failed to delete event: not authenticated'
+    else:
+        httpResponseContent = 'Failed to delete event'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
 
 
 def create_event(request):
-    print('RECEIVED REQUEST: ' + request.method)
-    notifications = []
     if request.method == 'POST':
         if request.user.is_authenticated():
             event = Event(name = request.POST['name'],
@@ -38,14 +43,68 @@ def create_event(request):
                           noob_friendly = request.POST['noob_friendly'],
                           creator = request.user)
             event.save()
-            notifications.append("Честит сбор.")
-        return redirect('/')
+            httpResponseContent = 'Event created'
+        else:
+            httpResponseContent = 'Failed to create event: not authenticated'
     else:
-        return redirect('/')
+        httpResponseContent = 'Failed to create event'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def update_event(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated():
+            event = Event.get_event(id=request.POST['event_id'])
+            if request.user.id == event.creator_id:
+                event.name = request.POST['name']
+                event.date = request.POST['date']
+                event.start_point = request.POST['start_point']
+                event.start_point_coordinates = request.POST['start_point_coordinates']
+                event.end_point = request.POST['end_point']
+                event.end_point_coordinates = request.POST['end_point_coordinates']
+                event.description = request.POST['description']
+                event.noob_friendly = request.POST['noob_friendly']
+                event.save()
+                httpResponseContent = 'Event updated'
+            else:
+                httpResponseContent = 'Failed to edit event: not creator of the event'
+    else:
+        httpResponseContent = 'Failed to update event'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def update_rider(request):
+    if request.method == 'POST':
+        if not request.user.is_authenticated():
+            httpResponseContent = 'Failed to update rider: not authenticated'
+        else:
+            user = request.user
+            user.username = request.POST['username']
+            user.email = request.POST['email']
+            user.set_password (request.POST['password'])
+            user.save()
+            rider = Rider.get_rider(id=user.id)
+            rider.first_name = request.POST['first_name']
+            rider.nickname = request.POST['nickname']
+            rider.last_name = request.POST['last_name']
+            rider.save()
+            httpResponseContent = 'Rider updated'
+    else:
+        httpResponseContent = 'Failed to update rider'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
 
 def register_rider(user, first_name, nickname, last_name):
     rider = Rider(user, first_name, nickname, last_name)
     rider.save()
+
+
+def get_rider(request):
+    rider = Rider.get_rider(id=request.GET['id'])
+    if rider is not None:
+        return HttpResponse(content=Rider.to_json([rider]), content_type='application/json')
+    else:
+        return HttpResponse(content='Cannot find rider', content_type='application/json')
 
 
 def register(request):
@@ -92,56 +151,168 @@ def user_logout(request):
     return redirect('/')
 
 
-def user_edit(request):
-    print('RECEIVED REQUEST: ' + request.method)
-    notifications = []
-    if not request.user.is_authenticated():
-        notifications.append('Трябва да имате активна сесия, за да редактирате профил.')
-        return render(request, 'index.html', {'messages': notifications})
-
-    new_email = request.POST['new_email']
-    new_first_name = request.POST['new_first_name']
-    new_nickname = request.POST['new_nickname']
-    new_last_name = request.POST['new_last_name']
-    
-    old_password = request.POST['old_password']
-    new_password = request.POST['new_password']
-    retyped_new_password = request.POST['retyped_new_password']
-
-    user = request.user
-
-    notifications.append('Регистрира се. Животът е хубав.')
-    return redirect('/')
-
-
 def get_user_info(request):
     user = request.user
-    rider = Rider.objects.raw('SELECT * FROM app_rider WHERE user_id = ' + str(user.id))
-    return HttpResponse(content=Rider.to_json(rider))
+    rider = Rider.get_rider(user.id)
+    return HttpResponse(content=Rider.to_json([rider]), content_type='application/json')
 
 
-def get_event_info(request):
-    event = Event.objects.raw('SELECT * FROM app_event WHERE user_id = ' + str(user.id))
-    return HttpResponse(content=Event.to_json(event))
+def read_event(request):
+    event_id = request.GET['id']
+    event = Event.get_event(event_id)
+    if event is not None:
+        return HttpResponse(content=Event.to_json([event]), content_type='application/json')
+    else:
+        return HttpResponse(content='Cannot find event', content_type='application/json')
 
 
-def get_user_events(request):
+def read_user_events(request):
     user = request.user
-    events = Event.objects.raw('SELECT * FROM app_event WHERE creator_id = ' + str(user.id))
-    return HttpResponse(content=Event.to_json(events))
+    events = Event.get_user_events(user.id)
+    return HttpResponse(content=Event.to_json(events), content_type='application/json')
 
 
-def get_all_events(request):
-    return HttpResponse(content=Event.to_json(Event.get_all()))
+def read_all_events(request):
+    return HttpResponse(content=Event.to_json(Event.get_all()), content_type='application/json')
 
 
 def get_all_user_comments(request):
     user = request.user
-    comments = Comment.objects.raw('SELECT * FROM app_comment WHERE poster_id = ' + str(user.id))
-    return HttpResponse(content=Comment.to_json(comments))
+    comments = Comment.get_user_comments(user.id)
+    return HttpResponse(content=Comment.to_json(comments), content_type='application/json')
 
 
 def get_all_event_comments(request):
-    # fix event id..
-    comments = Comment.objects.raw('SELECT * FROM app_comment WHERE event_id = ' + str(user.id))
-    return HttpResponse(content=Comment.to_json(comments))
+    event_id = request.GET['id']
+    comments = Comment.get_event_comments(event_id)
+    return HttpResponse(content=Comment.to_json(comments), content_type='application/json')
+
+
+def post_comment(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated():
+            event = Event.get_event(request.POST['event_id'])
+            reply = request.POST['reply']
+            if not reply:
+                reply = None
+            comment = Comment(event = event,
+                              poster = request.user,
+                              content = request.POST['content'],
+                              reply = reply)
+            comment.save()
+            httpResponseContent = 'Comment posted'
+        else:
+            httpResponseContent = 'Failed to post comment: not authenticated'
+    else:
+        httpResponseContent = 'Failed to post comment'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def edit_comment(request):
+    if request.method == 'POST':
+        if not request.user.is_authenticated():
+            httpResponseContent = 'Failed to edit comment: not authenticated'
+        else:
+            comment = Comment.get_comment(request.POST['comment_id'])
+            if comment is None:
+                httpResponseContent = 'Failed to edit comment: could not find comment'
+            else:
+                comment.content = request.POST['content']
+                comment.save()
+                httpResponseContent = 'Comment edited'
+    else:
+        httpResponseContent = 'Failed to edit comment'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def delete_comment(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated():
+            comment = Comment.objects.get(id=request.GET['id'])
+            if request.user.id == comment.poster_id:
+                comment.delete()
+                httpResponseContent = 'Comment deleted'
+            else:
+                httpResponseContent = 'Failed to delete comment: not poster of the comment'
+        else:
+            httpResponseContent = 'Failed to delete comment: not authenticated'
+    else:
+        httpResponseContent = 'Failed to delete comment'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def create_notification(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated():
+            user = Rider.get_rider(id=request.POST['user'])
+            from_user = Rider.get_rider(id=request.POST.get('from_user'))
+            event = Event.get_event(request.POST.get('event'))
+            notification_type = request.POST['notification_type']
+            
+            notification = Notification(user = user,
+                                        from_user = from_user,
+                                        event = event,
+                                        notification_type = notification_type)
+            notification.save()
+            httpResponseContent = 'Notification created'
+        else:
+            httpResponseContent = 'Failed to create notification: not authenticated'
+    else:
+        httpResponseContent = 'Failed to create notification'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def read_user_notifications(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated():
+            notifications = Notification.get_user_notifications(request.user.id)
+            httpResponseContent = Notification.to_json(notifications)
+        else:
+            httpResponseContent = 'Failed to get notifications: not authenticated'
+    else:
+        httpResponseContent = 'Failed to get notifications'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def set_notification_seen(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated():
+            notification = Notification.get_user_notifications(request.user.id)
+            httpResponseContent = Notification.to_json(notification)
+        else:
+            httpResponseContent = 'Failed to set notification seen: not authenticated'
+    else:
+        httpResponseContent = 'Failed to set notification seen'
+
+
+def get_notification_types(request):
+    if request.method  =='GET':
+        if request.user.is_authenticated():
+            httpResponseContent = Notification.get_notification_types_json()
+        else:
+            httpResponseContent = 'Failed to get notification types: not authenticated'
+    else:
+        httpResponseContent = 'Failed to get notification types'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def get_motorbike_types(request):
+    if request.method  =='GET':
+        if request.user.is_authenticated():
+            httpResponseContent = Motorbike.get_moto_types_json()
+        else:
+            httpResponseContent = 'Failed to get motorbike types: not authenticated'
+    else:
+        httpResponseContent = 'Failed to get motorbike types'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def get_motorbike_manufacturers(request):
+    if request.method  =='GET':
+        if request.user.is_authenticated():
+            httpResponseContent = Motorbike.get_moto_manufacturers_json()
+        else:
+            httpResponseContent = 'Failed to display motorbike manufacturers: not authenticated'
+    else:
+        httpResponseContent = 'Failed to display motorbike manufcaturers'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')

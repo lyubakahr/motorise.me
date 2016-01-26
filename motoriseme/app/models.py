@@ -16,7 +16,10 @@ class Rider(models.Model):
 
     @classmethod
     def get_rider(cls, id):
-        return cls.objects.get(user_id=id)
+        try:
+            return cls.objects.get(user_id=id)
+        except:
+            return None
 
     @classmethod
     def to_json(cls, riders):
@@ -49,6 +52,17 @@ class Event(models.Model):
     def get_all(cls):
         return cls.objects.all()
 
+    @classmethod
+    def get_event(cls, event_id):
+        try:
+            return cls.objects.get(id=event_id)
+        except:
+            return None
+
+    @classmethod
+    def get_user_events(cls, user_id):
+        return Event.objects.raw('SELECT * FROM app_event WHERE creator_id = ' + str(user_id))
+
     def __str__(self):
         return '{} - Кога: {}, Къде: {}, Какво: {}'.format(self.name, self.date, self.start_point, self.description)
 
@@ -75,15 +89,26 @@ class Comment(models.Model):
     event = models.ForeignKey(Event)
     poster = models.ForeignKey(User)
     content = models.TextField()
-    reply = models.ForeignKey("self", null=True)
+    reply = models.ForeignKey('self', null=True)
 
     @classmethod
     def get_all(cls):
         return cls.objects.all()
 
     @classmethod
-    def get_comment(cls, id):
-        return cls.objects.get(id=id)
+    def get_comment(cls, comment_id):
+        try:
+            return cls.objects.get(id=comment_id)
+        except:
+            return None
+
+    @classmethod
+    def get_user_comments(cls, user_id):
+        return Comment.objects.raw('SELECT * FROM app_comment WHERE poster_id = ' + str(user_id))
+
+    @classmethod
+    def get_event_comments(cls, event_id):
+        return Comment.objects.raw('SELECT * FROM app_comment WHERE event_id = ' + str(event_id))
 
     @classmethod
     def to_json(cls, comments):
@@ -98,3 +123,88 @@ class Comment(models.Model):
             }
             context.append(json_comment)
         return json.dumps(context)
+
+
+# use mysql event scheduler to update isActive field
+class Notification(models.Model):
+    notification_types = ['friend request', 'event invitation', 'event reminder']
+    is_seen = models.BooleanField(default = False)
+    is_active = models.BooleanField(default = False)
+    # active_from # timestamp to change is active field, only for event coming notifications, nullable
+    user = models.ForeignKey(Rider, related_name='rider1')
+    from_user = models.ForeignKey(Rider, related_name='rider2', null=True)
+    event = models.ForeignKey(Event, null=True)
+    notification_type = models.CharField(max_length=254)
+
+    @classmethod
+    def get_all(cls):
+        return cls.objects.all()
+
+    @classmethod
+    def get_notification(cls, notification_id):
+        try:
+            return cls.objects.get(id=notification_id)
+        except:
+            return None
+
+    @classmethod
+    def get_user_notifications(cls, user_id):
+        return Notification.objects.raw(
+            'SELECT * FROM app_notification WHERE user_id = ' + str(user_id) +
+            ' AND is_active = 1 AND is_seen = 0'
+        )
+
+    @classmethod
+    def get_notification_types_json(cls):
+        return json.dumps(cls.notification_types)
+
+    @classmethod
+    def to_json(cls, notifications):
+        context = []
+        for notification in notifications:
+            from_user = None
+            event = None
+            if notification.from_user is not None:
+                from_user = notification.from_user.user.username
+            if notification.event is not None:
+                event = notification.event.id
+            json_notification = {
+                'from_user': from_user,
+                'event': event,
+                'notification_type': notification.notification_type
+            }
+            context.append(json_notification)
+        return json.dumps(context)
+
+
+class Motorbike(models.Model):
+    moto_types = ['enduru', 'cross bike', 'atv', 'chopper', 'scooter', 'naked bike', 'tourer','sport bike', 'trike', 'track bike', 'cafe racer', 'custom bike'] 
+    moto_type = models.CharField(max_length = 50)
+    moto_manufacturers = ['Aeon', 'Aprilia', 'Arctic', 'Atala', 'Avo', 'Babeta', 'Balkan', 'Baotian', 'Bashan', 'Benneli', 'Benzhou', 'Beta', 'Bmw', 
+                          'Bombardier', 'Bora', 'Buell', 'Cagiva', 'Can-am', 'Cax', 'Cfmoto', 'Chimatti', 'Chin', 'Chung', 'Cpi', 'CRG', 'Cz', 'Daelim', 
+                          'Delta', 'Derbi', 'DINLI', 'Dkw', 'Dneper', 'Ducati', 'Egl', 'Etz', 'Falcon', 'Fantik', 'Fym', 'Galeri', 'Gareli', 'Gas gas', 
+                          'GELY', 'Genata', 'Generic', 'Geo ming', 'Gilera', 'Go-ped', 'Harley', 'Herkules', 'HiSUN', 'Honda', 'Hupper', 'Husaberg', 
+                          'Huskwarna', 'Hyosung', 'Ifa', 'Irbib', 'Irbit', 'Italjet', 'Jawa', 'Jianshe', 'Jinlun', 'JOCSPORT', 'Jonway', 'Kagiva', 'Karpati', 
+                          'Kawasaki', 'Keeway', 'Kinetic', 'Ktm', 'Kymco', 'Lantana', 'Laverda', 'Ly-gig', 'Malaguti', 'Mb', 'Mbk', 'Mikilon', 'Minareli', 
+                          'Mini', 'Moto Guzzi', 'Motobim', 'Motomorini', 'MTL', 'Mtz', 'Mulan', 'Multistrada', 'MV AGUSTA', 'Mz', 'NBLOCK', 'Nsu', 'Oral', 
+                          'Panonia', 'Peugeot', 'Piaggio', 'Pocketbike', 'Polaris', 'Polini Motori', 'Qm', 'Rex', 'Riga', 'Romet', 'SACHS', 'Saks', 'Sampo', 
+                          'Sandiro', 'Sanyang', 'Sax', 'Scato', 'Scoot', 'Shineray', 'Simson', 'Ski-Doo', 'Sonik', 'Staer', 'Stella', 'Stz', 'Sundiro', 'Suzuki', 
+                          'Swm', 'Sym', 'Tandirо', 'Tango', 'Tatran', 'Tauris', 'Tgb', 'Tm', 'Tomus', 'Tonaro', 'Triumph', 'Truva', 'Tula', 'Tzun', 'Ural', 
+                          'Vanetti', 'Vespa', 'Victory', 'Vromos', 'Wangye Tokimoto', 'Wt', 'Wuxi', 'Xingyu', 'Xingyue', 'Xinshun', 'Yamaha', 'Yawa', 'YIBEN', 
+                          'Yuki', 'Zongshen', 'Zundab', 'Аvо', 'Возход', 'Вятка', 'Днепър', 'Дунавия', 'Иж', 'Калинка', 'Ковровец', 'М-62', 'М-70', 'М-72', 
+                          'Минск', 'Пух', 'Урал']
+    moto_manifacturer = models.CharField(max_length=50)
+    moto_model = models.CharField(max_length=50)
+    moto_cubature = models.CharField(max_length=50)
+
+    @classmethod
+    def get_all(cls):
+        return cls.objects.all()
+
+    @classmethod    
+    def get_moto_types_json(cls):
+        return json.dumps(cls.moto_types)
+
+    @classmethod    
+    def get_moto_manufacturers_json(cls):
+        return json.dumps(cls.moto_manufacturers)

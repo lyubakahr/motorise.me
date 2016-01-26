@@ -28,3 +28,34 @@ The user must be able to rate the route with rating
 Hardware part
 --------------
 Device with accelerometer, gps, gyro 
+
+
+
+TODO:
+	notifications model
+	cron jobs for creation of notifications on event times
+	pictures for users by link (say, from flickr)
+	user attendance to events table
+	bike model
+	user interests
+	invite by email to join the portal
+	add event types for filtering by interests
+	model friendships somehow
+
+
+services:
+	get all notifications for user
+	create notification
+	set notification seen
+	remove notification (if event is deleted) // maybe directly in the delete event method
+	user join event
+	user leave event
+	filter events by type (to satisfy user interests)
+	CRUD bike
+	send invitation to emails
+	user add picture to create and update
+	user interests table
+	CRUD friendships
+
+
+Done:
