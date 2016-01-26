@@ -32,5 +32,10 @@ urlpatterns = [
     url(r'^update_motorbike$', views.update_motorbike, name='update_motorbike'),
     url(r'^read_motorbike$', views.read_motorbike, name='read_motorbike'),
     url(r'^delete_motorbike$', views.delete_motorbike, name='delete_motorbike'),
+    url(r'^send_friend_request$', views.send_friend_request, name='send_friend_request'),
+    url(r'^accept_friend_request$', views.accept_friend_request, name='accept_friend_request'),
+    url(r'^decline_friend_request$', views.decline_friend_request, name='decline_friend_request'),
+    url(r'^remove_friend$', views.remove_friend, name='remove_friend'),
+    url(r'^get_user_friends$', views.get_user_friends, name='get_user_friends'),
 ]
 

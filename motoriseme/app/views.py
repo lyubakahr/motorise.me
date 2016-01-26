@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from app.models import Rider, Event, Comment, Notification, Motorbike
+from app.models import Rider, Event, Comment, Notification, Motorbike, Friendship
 from django.shortcuts import redirect
 
 
@@ -403,4 +403,88 @@ def delete_motorbike(request):
             httpResponseContent = 'Failed to delete motorbike: not authenticated'
     else:
         httpResponseContent = 'Failed to delete motorbike'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def send_friend_request(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated():
+            user = request.user
+            try:
+                friend = User.objects.get(id=request.POST['friend'])
+                friendship = Friendship(user=user, friend=friend)
+                friendship.save()
+                notification = Notification(user = friend,
+                                            from_user = user,
+                                            event = None,
+                                            notification_type = 'friend request')
+                notification.save()
+                httpResponseContent = 'Friend request sent'
+            except:
+                httpResponseContent = 'Friend request failed: friend not found'
+        else:
+            httpResponseContent = 'Failed to send friend request: not authenticated'
+    else:
+        httpResponseContent = 'Failed to send friend request'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def accept_friend_request(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated():
+            friend = User.objects.get(id=request.POST['friend'])
+            try:
+                friendship = Friendship(user=request.user, friend=friend)
+                friendship.save()
+                friendship = Friendship(user=friend, friend=request.user)
+                friendship.save()
+                httpResponseContent = 'Friend request accepted'
+            except:
+                httpResponseContent = 'Failed to accept friend request: friend not found'
+        else:
+            httpResponseContent = 'Failed to accept friend request: not authenticated'
+    else:
+        httpResponseContent = 'Failed to accept friend request'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def decline_friend_request(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated():
+            httpResponseContent = 'Friend request declined'
+        else:
+            httpResponseContent = 'Failed to decline friend request: not authenticated'
+    else:
+        httpResponseContent = 'Failed to decline friend request'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def remove_friend(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated():
+            friend = User.objects.get(id=request.POST['friend'])
+            try:
+                friendship = Friendship(user_id=request.user.id, friend_id=friend.id)
+                friendship.delete()
+                friendship = Friendship.get_friendship(user_id=friend.id, friend_id=request.user.id)
+                friendship.delete()
+                httpResponseContent = 'Friend removed'
+            except:
+                httpResponseContent = 'Failed to remove friend: friendship not found'
+        else:
+            httpResponseContent = 'Failed to remove friend: not authenticated'
+    else:
+        httpResponseContent = 'Failed to remove friend'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def get_user_friends(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated():
+            friends = Friendship.get_user_friends(user_id)
+            httpResponseContent = Friendship.to_json(friends)
+        else:
+            httpResponseContent = 'Failed to get user friends: not authenticated'
+    else:
+        httpResponseContent = 'Failed to get user friends'
     return HttpResponse(content=httpResponseContent, content_type='application/json')

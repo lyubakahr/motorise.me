@@ -231,3 +231,42 @@ class Motorbike(models.Model):
     @classmethod    
     def get_moto_manufacturers_json(cls):
         return json.dumps(cls.moto_manufacturers)
+
+    @classmethod
+    def to_json(cls, motorbikes):
+        context = []
+        for motorbike in motorbikes:
+            json_motorbike = {
+                'moto_type': motorbike.moto_type,
+                'moto_manufacturer': motorbike.moto_manufacturer,
+                'moto_model': motorbike.moto_model,
+                'moto_cubature': motorbike.cubature,
+                'moto_owner': motorbike.owner.username
+            }
+            context.append(json_motorbike)
+        return json.dumps(context)
+
+
+class Friendship(models.Model):
+    user = models.ForeignKey(Rider, related_name='friend1')
+    friend = models.ForeignKey(Rider, related_name='friend2')
+
+    @classmethod
+    def get_all(cls):
+        return cls.objects.all()
+
+    @classmethod
+    def get_friendship(cls, user_id, friend_id):
+        return cls.objects.raw('SELECT * FROM app_friendship WHERE user_id = ' + str(user_id) +
+                               ' AND friend_id = ' + str(friend_id))
+
+    @classmethod
+    def get_user_friends(cls, user_id):
+        return cls.objects.raw('SELECT * FROM app_friendship WHERE user_id = ' + str(user_id))
+
+    @classmethod
+    def to_json(cls, friendships):
+        friends = []
+        for friendship in friendships:
+            friends.append(friendship.friend.username)
+        return json.dumps({'friends': friends})
