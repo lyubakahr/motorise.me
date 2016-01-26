@@ -248,13 +248,15 @@ def create_notification(request):
             from_user = Rider.get_rider(id=request.POST.get('from_user'))
             event = Event.get_event(request.POST.get('event'))
             notification_type = request.POST['notification_type']
-            
-            notification = Notification(user = user,
-                                        from_user = from_user,
-                                        event = event,
-                                        notification_type = notification_type)
-            notification.save()
-            httpResponseContent = 'Notification created'
+            if notification_type not in Notification.notification_types:
+                httpResponseContent = 'Failed to create notification: invalid notification type'
+            else:
+                notification = Notification(user = user,
+                                            from_user = from_user,
+                                            event = event,
+                                            notification_type = notification_type)
+                notification.save()
+                httpResponseContent = 'Notification created'
         else:
             httpResponseContent = 'Failed to create notification: not authenticated'
     else:
@@ -315,4 +317,90 @@ def get_motorbike_manufacturers(request):
             httpResponseContent = 'Failed to display motorbike manufacturers: not authenticated'
     else:
         httpResponseContent = 'Failed to display motorbike manufcaturers'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def create_motorbike(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated():
+            moto_type = request.POST['type']
+            moto_manufacturer = request.POST['manufacturer']
+            if moto_type not in Motorbike.moto_types:
+                httpResponseContent = 'Failed to create motorbike: invalid type'
+            elif moto_manufacturer not in Motorbike.moto_manufacturers:
+                httpResponseContent = 'Failed to create motorbike: invalid manufacturer'
+            else:
+                motorbike = Motorbike(moto_type = moto_type,
+                                      moto_manufacturer = moto_manufacturer,
+                                      moto_model = request.POST['model'],
+                                      moto_cubature = request.POST['cubature'],
+                                      moto_owner = request.user)
+                motorbike.save()
+                httpResponseContent = 'Motorbike created'
+        else:
+            httpResponseContent = 'Failed to create motorbike: not authenticated'
+    else:
+        httpResponseContent = 'Failed to create motorbike'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def read_motorbike(request):
+    motorbike_id = request.GET['id']
+    motorbike = Motorbike.get_motorbike(motorbike_id)
+    if motorbike is not None:
+        return HttpResponse(content=Motorbike.to_json([motorbike]), content_type='application/json')
+    else:
+        return HttpResponse(content='Cannot find motorbike', content_type='application/json')
+
+
+def update_motorbike(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated():
+            motorbike = Motorbike.get_user_motorbike()
+            moto_type = request.POST['type']
+            moto_manufacturer = request.POST['manufacturer']
+            if moto_type not in Motorbike.moto_types:
+                httpResponseContent = 'Failed to update motorbike: invalid type'
+            elif moto_manufacturer not in Motorbike.moto_manufacturers:
+                httpResponseContent = 'Failed to update motorbike: invalid manufacturer'
+            else:
+                motorbike.moto_type = moto_type
+                motorbike.moto_manufacturer = moto_manufacturer
+                motorbike.moto_model = request.POST['model']
+                motorbike.moto_cubature = request.POST['cubature']
+                if request.user.id == motorbike.owner_id:
+                    motorbike.save()
+                    httpResponseContent = 'Motorbike updated'
+                else:
+                    httpResponseContent = 'Failed to edit motorbike: not owner of the motorbike'
+    else:
+        httpResponseContent = 'Failed to update motorbike'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def get_user_motorbike(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated():
+            motorbike = Motorbike.get_user_motorbike(request.user.id)
+            httpResponseContent = Motorbike.to_json(motorbike)
+        else:
+            httpResponseContent = 'Failed to get motorbike: not authenticated'
+    else:
+        httpResponseContent = 'Failed to get motorbike'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def delete_motorbike(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated():
+            motorbike = Motorbike.objects.get_user_motorbike()
+            if request.user.id == motorbike.owner_id:
+                motorbike.delete()
+                httpResponseContent = 'Motorbike deleted'
+            else:
+                httpResponseContent = 'Failed to delete motorbike: not owner of the motorbike'
+        else:
+            httpResponseContent = 'Failed to delete motorbike: not authenticated'
+    else:
+        httpResponseContent = 'Failed to delete motorbike'
     return HttpResponse(content=httpResponseContent, content_type='application/json')

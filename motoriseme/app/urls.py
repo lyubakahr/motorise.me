@@ -27,5 +27,10 @@ urlpatterns = [
     url(r'^get_notification_types$', views.get_notification_types, name='get_notification_types'),
     url(r'^get_moto_types$', views.get_motorbike_types, name='get_moto_types'),
     url(r'^get_moto_manufacturers$', views.get_motorbike_manufacturers, name='get_moto_manufacturers'),
+    url(r'^get_user_motorbike$', views.get_user_motorbike, name='get_user_motorbike'),
+    url(r'^create_motorbike$', views.create_motorbike, name='create_motorbike'),
+    url(r'^update_motorbike$', views.update_motorbike, name='update_motorbike'),
+    url(r'^read_motorbike$', views.read_motorbike, name='read_motorbike'),
+    url(r'^delete_motorbike$', views.delete_motorbike, name='delete_motorbike'),
 ]
 
