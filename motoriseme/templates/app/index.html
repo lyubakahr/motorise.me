@@ -1,181 +1,123 @@
 {% extends "base_app.html" %}
 
 {% block content %}
+    <div class="row">
+      <div class="large-6 columns">
+        <div class="row left-heading-text">
+          <p class="left-heading-big-text">Connect with bikers like you</p>
+          <p>Ride with friends, track lean angels, explore bike routes.</p>
+          <p>Motorise.me is an inovvative platform that aims to unite bikers and help them find the ride people to ride with. Explore points of interest on the map, track you lean angles along the way, or simply create and share the best biking roads around.</p>
+        </div>
+      </div>
+      <div class="large-5 columns callout register-form">
+        <form method="POST" action="/register">
+          {% csrf_token %}
+          <div class="row">
+            <div class="large-12 columns">
+              <a class="button facebook" href="">Sign up with Facebook</a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="large-12 columns">
+              <a class="button google" href="">Sign up with Google</a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="large-12 columns">
+              <p>or sign up with your email address</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="large-12 columns">
+              <input placeholder="Username" type="text" name="username" required />
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="large-12 columns">
+              <input placeholder="Password" type="password" name="password" required />
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="large-12 columns">
+              <input type="password" name="password-confirm" required placeholder="Confirm password" />
+            </div>
+          </div>
 
-{% if messages %}
-  <div id="notifications">
-  {% for message in messages %}
-    {{ message }}<br />
-  {% endfor %}
-  </div>
-{% endif %}
+          <div class="row">
+            <div class="large-12 columns">
+              <a class="button sign-up" href="">Sign Up</a>
+            </div>
+          </div>
 
-{% if not user.is_active %}
-<form method="post" action="login">
-    {% csrf_token %}
+          <div class="row">
+            <div class="large-12 columns">
+              <p>By signing up for Motorise.me, you agree to the <a href="">Terms of Service</a>. View our <a href="">Privacy Policy</a>.</p>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
 
-    <div class="row">
-      <div class="small-4 columns">
-        <h1>Логин</h1>
+    <div class="login-footer-top">
+      <div class="row">
+        <div class="large-3 columns">
+          <h2>How it works</h2>
+        </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="small-4 columns">
-        <input placeholder="Username" type="text" name="username" required />
-      </div>
-    </div>
-    <div class="row">
-      <div class="small-4 columns">
-        <input placeholder="Password" type="password" name="password" required />
-      </div>
-    </div>
-    <div class="row">
-      <div class="small-4 columns">
-        <input type="submit" name="submit" value="Логни се" />
-        <a data-open="registerFormModal">Регни се</a>
-      </div>
-    </div>
-</form>
-
-<div class="reveal" id="registerFormModal" data-reveal>
-  {% if not user.is_active %}
-  <form method="post" action="/register">
-    {% csrf_token %}
-    <h3>Регистрирай се</h3>
-    <div class="row">
-      <div class="small-12 columns">
-        <input placeholder="Username" type="text" name="username" required />
-      </div>
-    </div>
-    
-    <div class="row">
-      <div class="small-12 columns">
-        <input placeholder="Password" type="password" name="password" required />
-      </div>
-    </div>
-    
-    <div class="row">
-      <div class="small-12 columns">
-        <input type="email" name="email" required placeholder="Enter a valid email address" />
-      </div>
-    </div>
-    
-    <div class="row">
-      <div class="small-12 columns">
-        <input type="Text" name="first_name" placeholder="First name" />
-      </div>
-    </div>
-    
-    <div class="row">
-      <div class="small-12 columns">
-        <input type="Text" name="nickname" placeholder="Nickname" />
-      </div>
-    </div>
-    
-    <div class="row">
-      <div class="small-12 columns">
-        <input type="Text" name="last_name" placeholder="Last name" />
-      </div>
-    </div>
-    
-    <div class="row">
-      <div class="small-12 columns">
-        <input class="medium button" type="submit" name="submit" value="Регистрирай се" />
-      </div>
-    </div>
-  </form>
-  {% else %}
-    Вече си логнат.
-  {% endif %}
-</div>
-{% else %}
-  <div class="row">
-    <div class="small-4 columns">
-      Здравей, {{ user.get_username }}
-      <a href="/logout">Махай се</a>
-    </div>
-  </div>
-  <div class="row">
-    <a class="large button" data-open="eventFormModal">Организирай каране с други хора</a>
-  </div>
-  <div class="reveal" id="eventFormModal" data-reveal>
-    <form method="post" action="create_event">
-        {% csrf_token %}
-        <h3>Карай с други хора</h3>
-        <div class="row">
-          <div class="small-12 columns">
-            <input placeholder="Event name" type="text" name="name" required />
+      <div class="row">
+        <div class="large-4 columns">
+          <div class="row column">
+            <div class="large-12 columns">
+              <img class="footer-image" src="assets/img/imac.png" alt="Step 1">
+            </div>
+          </div>
+          <div class="row column">
+            <div class="large-12 columns">
+              <h4>1</h4>
+            </div>
+          </div>
+          <div class="row column">
+            <div class="large-12 columns">
+              <h4>Organize your ride</h4>
+            </div>
           </div>
         </div>
-        <div class="row">
-          <div class="small-12 columns">
-            <input placeholder="Date" type="date" name="date" required />
+        <div class="large-5 columns">
+          <div class="row column">
+            <div class="large-12 columns">
+              <img class="footer-image" src="assets/img/bikes.jpg" alt="Step 2">
+            </div>
+          </div>
+          <div class="row column">
+            <div class="large-12 columns">
+              <h4>2</h4>
+            </div>
+          </div>
+          <div class="row column">
+            <div class="large-12 columns">
+              <h4>Invite your buddies</h4>
+            </div>
           </div>
         </div>
-        <div class="row">
-          <div class="small-12 columns">
-            <input placeholder="Start Point" type="text" name="start_point" required />
+        <div class="large-3 columns">
+          <div class="row column">
+            <div class="large-12 columns">
+              <img class="footer-image" src="assets/img/rideit.jpg" alt="Step 3">
+            </div>
+          </div>
+          <div class="row column">
+            <div class="large-12 columns">
+              <h4>3</h4>
+            </div>
+          </div>
+          <div class="row column">
+            <div class="large-12 columns">
+              <h4>Give it the beans</h4>
+            </div>
           </div>
         </div>
-        <div class="row">
-          <div class="small-12 columns">
-            <input placeholder="Start Point coords" type="text" name="start_point_coordinates" required />
-          </div>
-        </div>
-        <div class="row">
-          <div class="small-12 columns">
-            <input placeholder="End Point" type="text" name="end_point" />
-          </div>
-        </div>
-        <div class="row">
-          <div class="small-12 columns">
-            <input placeholder="End Point coords" type="text" name="end_point_coordinates"/>
-          </div>
-        </div>
-        <div class="row">
-          <div class="small-12 columns">
-            <label for="noob_friendly">Noob friendly?</label>
-            <input type="hidden" name="noob_friendly" value="0" />
-            <input type="checkbox" name="noob_friendly" value="1">
-          </div>
-        </div>
-        <div class="row">
-          <div class="small-12 columns">
-            <label for="description">Description</label>
-            <textArea name="description"></textArea>
-          </div>
-        </div>
-        <div class="row">
-          <div class="small-12 columns">
-            <input type="submit" name="submit" value="Карай" />
-          </div>
-        </div>
-    </form>
-  </div>
-
-  {% if events %}
-    {% for event in events %}
-        <div class="row">
-          <div class="small-5 columns">
-            <h4>{{ event.name }}</h4>
-          </div>
-          <div class="small-6 columns">
-            <p>{{ event.date }}</p>
-          </div>
-          <div class="small-1 columns">
-            {%  if event.creator_id == user.id  %}
-              <a href="delete_event?id={{ event.id }}" class="medium alert button">Destory</a><br/>
-            {% endif %}
-          </div>
-        </div>
-        <div class="row">
-          <div class="small-12 columns">
-            <p>{{ event.description }}</p>
-          </div>
-        </div>
-        <hr>
-    {% endfor %}
-  {% endif %}
-{% endif %}
-
+      </div>
+    </div>
 {% endblock %}
