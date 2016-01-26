@@ -7,9 +7,8 @@ from django.shortcuts import redirect
 
 
 def index(request):
-    notifications = []
     if request.user.is_authenticated():
-        return render(request, 'app/index.html', {'events': Event.objects.all()})
+        return render(request, 'app/home.html', {'events': Event.objects.all()})
     else:
         return render(request, 'app/index.html', {})
 
@@ -109,26 +108,29 @@ def get_rider(request):
 
 def register(request):
     print('RECEIVED REQUEST: ' + request.method)
-    notifications = []
     if request.method == 'GET':
         if request.user.is_authenticated():
-            notifications.append('Вече сте логнат.')
-            return redirect('/')
-        return render(request, 'app/register.html', {})
+            return render(request, 'app/home.html', {})
+        return render(request, 'app/index.html', {})
     else:
         if request.user.is_authenticated():
-            notifications.append("Вече сте логнат.")
-            return render(request, 'app/index.html', {'messages': notifications})
+            return render(request, 'app/home.html', {})
         user = User.objects.create_user(request.POST['username'],
                                         request.POST['email'],
                                         request.POST['password'])
         register_rider(user.id,
-                       request.POST['first_name'],
-                       request.POST['nickname'],
-                       request.POST['last_name'])
-        notifications.append('Регистрира се. Животът е хубав.')
-        return render(request, 'app/index.html', {'messages': notifications})
+                       request.POST.get('first_name'),
+                       request.POST.get('nickname'),
+                       request.POST.get('last_name'))
+        user = authenticate(username=request.POST['username'], password=request.POST['password'])
+        login(request, user)
+        return render(request, 'app/home.html', {})
 
+def login_page(request):
+    if request.user.is_authenticated():
+        return render(request, 'app/home.html', {'events': Event.objects.all()})
+    else:
+        return render(request, 'app/login.html', {})
 
 def user_login(request):
     username = request.POST['username']
@@ -143,7 +145,7 @@ def user_login(request):
             notifications.append(username + ' акаунтът е неактивен.')
     else:
         notifications.append("Невалидно име или парола.")
-        return render(request, 'app/index.html', {'messages': notifications})
+        return render(request, 'app/home.html', {'messages': notifications})
 
 
 def user_logout(request):
