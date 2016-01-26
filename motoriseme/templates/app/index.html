@@ -1,6 +1,19 @@
 {% extends "base_app.html" %}
 
 {% block content %}
+    <div class="row header">
+      <div class="large-7 columns title">
+        motorise.me
+      </div>
+      <div class="large-5 columns">
+        <ul class="menu expanded">
+          <li><a href="">ABOUT US</a></li>
+          <li><a href="">FEATURES</a></li>
+          <li><a href="">NEWS</a></li>
+          <li><a id="login-button" class="login-button" href="/login_page">LOG IN</a></li>
+        </ul>
+      </div>
+    </div>
     <div class="row">
       <div class="large-6 columns">
         <div class="row left-heading-text">
@@ -10,7 +23,7 @@
         </div>
       </div>
       <div class="large-5 columns callout register-form">
-        <form method="POST" action="/register">
+        <form id="register-form" method="POST" action="/register">
           {% csrf_token %}
           <div class="row">
             <div class="large-12 columns">
@@ -32,7 +45,13 @@
               <input placeholder="Username" type="text" name="username" required />
             </div>
           </div>
-          
+
+          <div class="row">
+            <div class="large-12 columns">
+              <input placeholder="Email" type="email" name="email" required />
+            </div>
+          </div>
+
           <div class="row">
             <div class="large-12 columns">
               <input placeholder="Password" type="password" name="password" required />
@@ -47,7 +66,7 @@
 
           <div class="row">
             <div class="large-12 columns">
-              <a class="button sign-up" href="">Sign Up</a>
+              <a id="signup-button" class="button sign-up" href="">Sign Up</a>
             </div>
           </div>
 
@@ -117,6 +136,26 @@
               <h4>Give it the beans</h4>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+    <div class="login-footer-bottom">
+      <div class="row">
+        <div class="large-7 columns">
+          <div class="row title">
+            motorise.me
+          </div>
+          <div class="row">
+            © 2016 Asphalt Kings OOD
+          </div>
+        </div>
+        <div class="large-5 columns">
+          <ul class="menu expanded">
+            <li><a href="">ABOUT US</a></li>
+            <li><a href="">FEATURES</a></li>
+            <li><a href="">NEWS</a></li>
+            <li><a href="">HELP</a></li>
+          </ul>
         </div>
       </div>
     </div>

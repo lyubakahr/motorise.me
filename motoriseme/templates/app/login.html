@@ -1,0 +1,71 @@
+{% extends "base_app.html" %}
+
+{% block content %}
+    <div class="row header logged-in expanded">
+      <div class="large-7 columns title">
+        motorise.me
+      </div>
+      <div class="large-5 columns">
+        <ul class="menu align-right">
+          <li><a id="login-button" class="login-button" href="/">SIGN UP</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="large-5 large-centered columns register-form login-header">
+        <p>LOG IN</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="large-5 large-centered columns register-form">
+        <form id="register-form" method="POST" action="/login">
+          {% csrf_token %}
+          <div class="row">
+            <div class="large-12 columns">
+              <a class="button facebook" href="">Log in with Facebook</a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="large-12 columns">
+              <a class="button google" href="">Log in with Google</a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="large-12 columns">
+              <p>or log in with your email address</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="large-12 columns">
+              <input placeholder="Username" type="text" name="username" required />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="large-12 columns">
+              <input placeholder="Password" type="password" name="password" required />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="large-12 columns">
+              <input type="checkbox" name="rememberme" />
+              <label>Remember me</label>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="large-12 columns">
+              <a id="signup-button" class="button sign-up" href="">Log In</a>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="large-12 columns">
+              <p><a href="">Forgot your password?</a></p>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+{% endblock %}
