@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from app.models import Rider, Event, Comment
+from app.models import Rider, Event, Comment, Motorbike
 from django.shortcuts import redirect
 
 
@@ -238,4 +238,26 @@ def delete_comment(request):
             httpResponseContent = 'Failed to delete comment: not authenticated'
     else:
         httpResponseContent = 'Failed to delete comment'
-    return HttpResponse(content=httpResponseContent, content_type="application/json")
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def get_motorbike_types(request):
+    if request.method  =='GET':
+        if request.user.is_authenticated():
+            httpResponseContent = Motorbike.get_moto_types_json()
+        else:
+            httpResponseContent = 'Failed to display motorbike type: not authenticated'
+    else:
+        httpResponseContent = 'Failed to display motorbike type'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def get_motorbike_manufacturers(request):
+    if request.method  =='GET':
+        if request.user.is_authenticated():
+            httpResponseContent = Motorbike.get_moto_manufacturers_json()
+        else:
+            httpResponseContent = 'Failed to display motorbike models: not authenticated'
+    else:
+        httpResponseContent = 'Failed to display motorbike models'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')

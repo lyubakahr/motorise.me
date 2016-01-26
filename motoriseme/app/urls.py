@@ -21,5 +21,7 @@ urlpatterns = [
     url(r'^post_comment$', views.post_comment, name='post_comment'),
     url(r'^edit_comment$', views.edit_comment, name='edit_comment'),
     url(r'^delete_comment$', views.delete_comment, name='delete_comment'),
+    url(r'^moto_types$', views.get_motorbike_types, name='get_moto_types'),
+    url(r'^moto_manufacturers$', views.get_motorbike_manufacturers, name='get_moto_manufacturers'),
 ]
 
