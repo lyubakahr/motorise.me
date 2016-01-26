@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from app.models import Rider, Event, Comment, Notification
+from app.models import Rider, Event, Comment, Notification, Motorbike
 from django.shortcuts import redirect
 
 
@@ -283,4 +283,36 @@ def set_notification_seen(request):
             httpResponseContent = 'Failed to set notification seen: not authenticated'
     else:
         httpResponseContent = 'Failed to set notification seen'
+
+
+def get_notification_types(request):
+    if request.method  =='GET':
+        if request.user.is_authenticated():
+            httpResponseContent = Notification.get_notification_types_json()
+        else:
+            httpResponseContent = 'Failed to get notification types: not authenticated'
+    else:
+        httpResponseContent = 'Failed to get notification types'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def get_motorbike_types(request):
+    if request.method  =='GET':
+        if request.user.is_authenticated():
+            httpResponseContent = Motorbike.get_moto_types_json()
+        else:
+            httpResponseContent = 'Failed to get motorbike types: not authenticated'
+    else:
+        httpResponseContent = 'Failed to get motorbike types'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def get_motorbike_manufacturers(request):
+    if request.method  =='GET':
+        if request.user.is_authenticated():
+            httpResponseContent = Motorbike.get_moto_manufacturers_json()
+        else:
+            httpResponseContent = 'Failed to display motorbike manufacturers: not authenticated'
+    else:
+        httpResponseContent = 'Failed to display motorbike manufcaturers'
     return HttpResponse(content=httpResponseContent, content_type='application/json')

@@ -24,5 +24,8 @@ urlpatterns = [
     url(r'^create_notification$', views.create_notification, name='create_notification'),
     url(r'^read_user_notifications$', views.read_user_notifications, name='read_user_notifications'),
     url(r'^set_notification_seen$', views.set_notification_seen, name='set_notification_seen'),
+    url(r'^get_notification_types$', views.get_notification_types, name='get_notification_types'),
+    url(r'^get_moto_types$', views.get_motorbike_types, name='get_moto_types'),
+    url(r'^get_moto_manufacturers$', views.get_motorbike_manufacturers, name='get_moto_manufacturers'),
 ]
 

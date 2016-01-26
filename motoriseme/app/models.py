@@ -156,13 +156,7 @@ class Notification(models.Model):
 
     @classmethod
     def get_notification_types_json(cls):
-        context = []
-        for notification_type in cls.notification_types:
-            json_notification_type = {
-                'notification_type': notification_type
-            }
-            context.append(json_notification_type)
-        return json.dumps(context)
+        return json.dumps(cls.notification_types)
 
     @classmethod
     def to_json(cls, notifications):
@@ -181,3 +175,36 @@ class Notification(models.Model):
             }
             context.append(json_notification)
         return json.dumps(context)
+
+
+class Motorbike(models.Model):
+    moto_types = ['enduru', 'cross bike', 'atv', 'chopper', 'scooter', 'naked bike', 'tourer','sport bike', 'trike', 'track bike', 'cafe racer', 'custom bike'] 
+    moto_type = models.CharField(max_length = 50)
+    moto_manufacturers = ['Aeon', 'Aprilia', 'Arctic', 'Atala', 'Avo', 'Babeta', 'Balkan', 'Baotian', 'Bashan', 'Benneli', 'Benzhou', 'Beta', 'Bmw', 
+                          'Bombardier', 'Bora', 'Buell', 'Cagiva', 'Can-am', 'Cax', 'Cfmoto', 'Chimatti', 'Chin', 'Chung', 'Cpi', 'CRG', 'Cz', 'Daelim', 
+                          'Delta', 'Derbi', 'DINLI', 'Dkw', 'Dneper', 'Ducati', 'Egl', 'Etz', 'Falcon', 'Fantik', 'Fym', 'Galeri', 'Gareli', 'Gas gas', 
+                          'GELY', 'Genata', 'Generic', 'Geo ming', 'Gilera', 'Go-ped', 'Harley', 'Herkules', 'HiSUN', 'Honda', 'Hupper', 'Husaberg', 
+                          'Huskwarna', 'Hyosung', 'Ifa', 'Irbib', 'Irbit', 'Italjet', 'Jawa', 'Jianshe', 'Jinlun', 'JOCSPORT', 'Jonway', 'Kagiva', 'Karpati', 
+                          'Kawasaki', 'Keeway', 'Kinetic', 'Ktm', 'Kymco', 'Lantana', 'Laverda', 'Ly-gig', 'Malaguti', 'Mb', 'Mbk', 'Mikilon', 'Minareli', 
+                          'Mini', 'Moto Guzzi', 'Motobim', 'Motomorini', 'MTL', 'Mtz', 'Mulan', 'Multistrada', 'MV AGUSTA', 'Mz', 'NBLOCK', 'Nsu', 'Oral', 
+                          'Panonia', 'Peugeot', 'Piaggio', 'Pocketbike', 'Polaris', 'Polini Motori', 'Qm', 'Rex', 'Riga', 'Romet', 'SACHS', 'Saks', 'Sampo', 
+                          'Sandiro', 'Sanyang', 'Sax', 'Scato', 'Scoot', 'Shineray', 'Simson', 'Ski-Doo', 'Sonik', 'Staer', 'Stella', 'Stz', 'Sundiro', 'Suzuki', 
+                          'Swm', 'Sym', 'Tandirо', 'Tango', 'Tatran', 'Tauris', 'Tgb', 'Tm', 'Tomus', 'Tonaro', 'Triumph', 'Truva', 'Tula', 'Tzun', 'Ural', 
+                          'Vanetti', 'Vespa', 'Victory', 'Vromos', 'Wangye Tokimoto', 'Wt', 'Wuxi', 'Xingyu', 'Xingyue', 'Xinshun', 'Yamaha', 'Yawa', 'YIBEN', 
+                          'Yuki', 'Zongshen', 'Zundab', 'Аvо', 'Возход', 'Вятка', 'Днепър', 'Дунавия', 'Иж', 'Калинка', 'Ковровец', 'М-62', 'М-70', 'М-72', 
+                          'Минск', 'Пух', 'Урал']
+    moto_manifacturer = models.CharField(max_length=50)
+    moto_model = models.CharField(max_length=50)
+    moto_cubature = models.CharField(max_length=50)
+
+    @classmethod
+    def get_all(cls):
+        return cls.objects.all()
+
+    @classmethod    
+    def get_moto_types_json(cls):
+        return json.dumps(cls.moto_types)
+
+    @classmethod    
+    def get_moto_manufacturers_json(cls):
+        return json.dumps(cls.moto_manufacturers)
