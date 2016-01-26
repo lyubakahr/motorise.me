@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from app.models import Rider, Event, Comment, Notification, Motorbike
+from app.models import Rider, Event, Comment, Notification, Motorbike, Friendship
 from django.shortcuts import redirect
 
 
@@ -250,13 +250,15 @@ def create_notification(request):
             from_user = Rider.get_rider(id=request.POST.get('from_user'))
             event = Event.get_event(request.POST.get('event'))
             notification_type = request.POST['notification_type']
-            
-            notification = Notification(user = user,
-                                        from_user = from_user,
-                                        event = event,
-                                        notification_type = notification_type)
-            notification.save()
-            httpResponseContent = 'Notification created'
+            if notification_type not in Notification.notification_types:
+                httpResponseContent = 'Failed to create notification: invalid notification type'
+            else:
+                notification = Notification(user = user,
+                                            from_user = from_user,
+                                            event = event,
+                                            notification_type = notification_type)
+                notification.save()
+                httpResponseContent = 'Notification created'
         else:
             httpResponseContent = 'Failed to create notification: not authenticated'
     else:
@@ -317,4 +319,174 @@ def get_motorbike_manufacturers(request):
             httpResponseContent = 'Failed to display motorbike manufacturers: not authenticated'
     else:
         httpResponseContent = 'Failed to display motorbike manufcaturers'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def create_motorbike(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated():
+            moto_type = request.POST['type']
+            moto_manufacturer = request.POST['manufacturer']
+            if moto_type not in Motorbike.moto_types:
+                httpResponseContent = 'Failed to create motorbike: invalid type'
+            elif moto_manufacturer not in Motorbike.moto_manufacturers:
+                httpResponseContent = 'Failed to create motorbike: invalid manufacturer'
+            else:
+                motorbike = Motorbike(moto_type = moto_type,
+                                      moto_manufacturer = moto_manufacturer,
+                                      moto_model = request.POST['model'],
+                                      moto_cubature = request.POST['cubature'],
+                                      moto_owner = request.user)
+                motorbike.save()
+                httpResponseContent = 'Motorbike created'
+        else:
+            httpResponseContent = 'Failed to create motorbike: not authenticated'
+    else:
+        httpResponseContent = 'Failed to create motorbike'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def read_motorbike(request):
+    motorbike_id = request.GET['id']
+    motorbike = Motorbike.get_motorbike(motorbike_id)
+    if motorbike is not None:
+        return HttpResponse(content=Motorbike.to_json([motorbike]), content_type='application/json')
+    else:
+        return HttpResponse(content='Cannot find motorbike', content_type='application/json')
+
+
+def update_motorbike(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated():
+            motorbike = Motorbike.get_user_motorbike()
+            moto_type = request.POST['type']
+            moto_manufacturer = request.POST['manufacturer']
+            if moto_type not in Motorbike.moto_types:
+                httpResponseContent = 'Failed to update motorbike: invalid type'
+            elif moto_manufacturer not in Motorbike.moto_manufacturers:
+                httpResponseContent = 'Failed to update motorbike: invalid manufacturer'
+            else:
+                motorbike.moto_type = moto_type
+                motorbike.moto_manufacturer = moto_manufacturer
+                motorbike.moto_model = request.POST['model']
+                motorbike.moto_cubature = request.POST['cubature']
+                if request.user.id == motorbike.owner_id:
+                    motorbike.save()
+                    httpResponseContent = 'Motorbike updated'
+                else:
+                    httpResponseContent = 'Failed to edit motorbike: not owner of the motorbike'
+    else:
+        httpResponseContent = 'Failed to update motorbike'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def get_user_motorbike(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated():
+            motorbike = Motorbike.get_user_motorbike(request.user.id)
+            httpResponseContent = Motorbike.to_json(motorbike)
+        else:
+            httpResponseContent = 'Failed to get motorbike: not authenticated'
+    else:
+        httpResponseContent = 'Failed to get motorbike'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def delete_motorbike(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated():
+            motorbike = Motorbike.objects.get_user_motorbike()
+            if request.user.id == motorbike.owner_id:
+                motorbike.delete()
+                httpResponseContent = 'Motorbike deleted'
+            else:
+                httpResponseContent = 'Failed to delete motorbike: not owner of the motorbike'
+        else:
+            httpResponseContent = 'Failed to delete motorbike: not authenticated'
+    else:
+        httpResponseContent = 'Failed to delete motorbike'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def send_friend_request(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated():
+            user = request.user
+            try:
+                friend = User.objects.get(id=request.POST['friend'])
+                friendship = Friendship(user=user, friend=friend)
+                friendship.save()
+                notification = Notification(user = friend,
+                                            from_user = user,
+                                            event = None,
+                                            notification_type = 'friend request')
+                notification.save()
+                httpResponseContent = 'Friend request sent'
+            except:
+                httpResponseContent = 'Friend request failed: friend not found'
+        else:
+            httpResponseContent = 'Failed to send friend request: not authenticated'
+    else:
+        httpResponseContent = 'Failed to send friend request'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def accept_friend_request(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated():
+            friend = User.objects.get(id=request.POST['friend'])
+            try:
+                friendship = Friendship(user=request.user, friend=friend)
+                friendship.save()
+                friendship = Friendship(user=friend, friend=request.user)
+                friendship.save()
+                httpResponseContent = 'Friend request accepted'
+            except:
+                httpResponseContent = 'Failed to accept friend request: friend not found'
+        else:
+            httpResponseContent = 'Failed to accept friend request: not authenticated'
+    else:
+        httpResponseContent = 'Failed to accept friend request'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def decline_friend_request(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated():
+            httpResponseContent = 'Friend request declined'
+        else:
+            httpResponseContent = 'Failed to decline friend request: not authenticated'
+    else:
+        httpResponseContent = 'Failed to decline friend request'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def remove_friend(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated():
+            friend = User.objects.get(id=request.POST['friend'])
+            try:
+                friendship = Friendship(user_id=request.user.id, friend_id=friend.id)
+                friendship.delete()
+                friendship = Friendship.get_friendship(user_id=friend.id, friend_id=request.user.id)
+                friendship.delete()
+                httpResponseContent = 'Friend removed'
+            except:
+                httpResponseContent = 'Failed to remove friend: friendship not found'
+        else:
+            httpResponseContent = 'Failed to remove friend: not authenticated'
+    else:
+        httpResponseContent = 'Failed to remove friend'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def get_user_friends(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated():
+            friends = Friendship.get_user_friends(user_id)
+            httpResponseContent = Friendship.to_json(friends)
+        else:
+            httpResponseContent = 'Failed to get user friends: not authenticated'
+    else:
+        httpResponseContent = 'Failed to get user friends'
     return HttpResponse(content=httpResponseContent, content_type='application/json')
