@@ -154,7 +154,7 @@ def user_logout(request):
 def get_user_info(request):
     user = request.user
     rider = Rider.get_rider(user.id)
-    return HttpResponse(content=Rider.to_json(rider), content_type="application/json")
+    return HttpResponse(content=Rider.to_json([rider]), content_type="application/json")
 
 
 def read_event(request):
