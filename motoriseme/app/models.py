@@ -89,7 +89,7 @@ class Comment(models.Model):
     event = models.ForeignKey(Event)
     poster = models.ForeignKey(User)
     content = models.TextField()
-    reply = models.ForeignKey("self", null=True)
+    reply = models.ForeignKey('self', null=True)
 
     @classmethod
     def get_all(cls):
@@ -122,4 +122,62 @@ class Comment(models.Model):
                 'reply': comment.reply_id
             }
             context.append(json_comment)
+        return json.dumps(context)
+
+
+# use mysql event scheduler to update isActive field
+class Notification(models.Model):
+    notification_types = ['friend request', 'event invitation', 'event reminder']
+    is_seen = models.BooleanField(default = False)
+    is_active = models.BooleanField(default = False)
+    # active_from # timestamp to change is active field, only for event coming notifications, nullable
+    user = models.ForeignKey(Rider, related_name='rider1')
+    from_user = models.ForeignKey(Rider, related_name='rider2', null=True)
+    event = models.ForeignKey(Event, null=True)
+    notification_type = models.CharField(max_length=254)
+
+    @classmethod
+    def get_all(cls):
+        return cls.objects.all()
+
+    @classmethod
+    def get_notification(cls, notification_id):
+        try:
+            return cls.objects.get(id=notification_id)
+        except:
+            return None
+
+    @classmethod
+    def get_user_notifications(cls, user_id):
+        return Notification.objects.raw(
+            'SELECT * FROM app_notification WHERE user_id = ' + str(user_id) +
+            ' AND is_active = 1 AND is_seen = 0'
+        )
+
+    @classmethod
+    def get_notification_types_json(cls):
+        context = []
+        for notification_type in cls.notification_types:
+            json_notification_type = {
+                'notification_type': notification_type
+            }
+            context.append(json_notification_type)
+        return json.dumps(context)
+
+    @classmethod
+    def to_json(cls, notifications):
+        context = []
+        for notification in notifications:
+            from_user = None
+            event = None
+            if notification.from_user is not None:
+                from_user = notification.from_user.user.username
+            if notification.event is not None:
+                event = notification.event.id
+            json_notification = {
+                'from_user': from_user,
+                'event': event,
+                'notification_type': notification.notification_type
+            }
+            context.append(json_notification)
         return json.dumps(context)

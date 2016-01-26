@@ -21,5 +21,8 @@ urlpatterns = [
     url(r'^post_comment$', views.post_comment, name='post_comment'),
     url(r'^edit_comment$', views.edit_comment, name='edit_comment'),
     url(r'^delete_comment$', views.delete_comment, name='delete_comment'),
+    url(r'^create_notification$', views.create_notification, name='create_notification'),
+    url(r'^read_user_notifications$', views.read_user_notifications, name='read_user_notifications'),
+    url(r'^set_notification_seen$', views.set_notification_seen, name='set_notification_seen'),
 ]
 
