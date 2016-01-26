@@ -27,7 +27,7 @@ def delete_event(request):
             httpResponseContent = 'Failed to delete event: not authenticated'
     else:
         httpResponseContent = 'Failed to delete event'
-    return HttpResponse(content=httpResponseContent)
+    return HttpResponse(content=httpResponseContent, content_type="application/json")
 
 
 def create_event(request):
@@ -48,7 +48,7 @@ def create_event(request):
             httpResponseContent = "Failed to create event: not authenticated"
     else:
         httpResponseContent = 'Failed to create event'
-    return HttpResponse(content=httpResponseContent)
+    return HttpResponse(content=httpResponseContent, content_type="application/json")
 
 
 def update_event(request):
@@ -70,7 +70,7 @@ def update_event(request):
                 httpResponseContent = 'Failed to edit event: not creator of the event'
     else:
         httpResponseContent = 'Failed to update event'
-    return HttpResponse(content=httpResponseContent)
+    return HttpResponse(content=httpResponseContent, content_type="application/json")
 
 
 def update_rider(request):
@@ -91,7 +91,7 @@ def update_rider(request):
             httpResponseContent = 'Rider updated'
     else:
         httpResponseContent = 'Failed to update rider'
-    return HttpResponse(content=httpResponseContent)
+    return HttpResponse(content=httpResponseContent, content_type="application/json")
 
 
 def register_rider(user, first_name, nickname, last_name):
@@ -102,9 +102,9 @@ def register_rider(user, first_name, nickname, last_name):
 def get_rider(request):
     rider = Rider.get_rider(id=request.GET['id'])
     if rider is not None:
-        return HttpResponse(content=Rider.to_json([rider]))
+        return HttpResponse(content=Rider.to_json([rider]), content_type="application/json")
     else:
-        return HttpResponse(content='Cannot find rider')
+        return HttpResponse(content='Cannot find rider', content_type="application/json")
 
 
 def register(request):
@@ -154,38 +154,38 @@ def user_logout(request):
 def get_user_info(request):
     user = request.user
     rider = Rider.get_rider(user.id)
-    return HttpResponse(content=Rider.to_json(rider))
+    return HttpResponse(content=Rider.to_json(rider), content_type="application/json")
 
 
 def read_event(request):
     event_id = request.GET['id']
     event = Event.get_event(event_id)
     if event is not None:
-        return HttpResponse(content=Event.to_json([event]))
+        return HttpResponse(content=Event.to_json([event]), content_type="application/json")
     else:
-        return HttpResponse(content='Cannot find event')
+        return HttpResponse(content='Cannot find event', content_type="application/json")
 
 
 def read_user_events(request):
     user = request.user
     events = Event.get_user_events(user.id)
-    return HttpResponse(content=Event.to_json(events))
+    return HttpResponse(content=Event.to_json(events), content_type="application/json")
 
 
 def read_all_events(request):
-    return HttpResponse(content=Event.to_json(Event.get_all()))
+    return HttpResponse(content=Event.to_json(Event.get_all()), content_type="application/json")
 
 
 def get_all_user_comments(request):
     user = request.user
     comments = Comment.get_user_comments(user.id)
-    return HttpResponse(content=Comment.to_json(comments))
+    return HttpResponse(content=Comment.to_json(comments), content_type="application/json")
 
 
 def get_all_event_comments(request):
     event_id = request.GET['id']
     comments = Comment.get_event_comments(event_id)
-    return HttpResponse(content=Comment.to_json(comments))
+    return HttpResponse(content=Comment.to_json(comments), content_type="application/json")
 
 
 def post_comment(request):
@@ -205,7 +205,7 @@ def post_comment(request):
             httpResponseContent = "Failed to post comment: not authenticated"
     else:
         httpResponseContent = 'Failed to post comment'
-    return HttpResponse(content=httpResponseContent)
+    return HttpResponse(content=httpResponseContent, content_type="application/json")
 
 
 def edit_comment(request):
@@ -222,7 +222,7 @@ def edit_comment(request):
                 httpResponseContent = 'Comment edited'
     else:
         httpResponseContent = 'Failed to edit comment'
-    return HttpResponse(content=httpResponseContent)
+    return HttpResponse(content=httpResponseContent, content_type="application/json")
 
 
 def delete_comment(request):
@@ -238,4 +238,4 @@ def delete_comment(request):
             httpResponseContent = 'Failed to delete comment: not authenticated'
     else:
         httpResponseContent = 'Failed to delete comment'
-    return HttpResponse(content=httpResponseContent)
+    return HttpResponse(content=httpResponseContent, content_type="application/json")
