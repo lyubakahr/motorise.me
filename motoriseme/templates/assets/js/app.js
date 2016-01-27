@@ -1,12 +1,30 @@
 $(document).foundation();
 
 window.addEventListener("load", function () {
-
+  var numberOfWaypoints = 0;
 
   if(document.getElementById("profile-button") != null) {
     document.getElementById("profile-button").addEventListener("click", function (e) {
       e.preventDefault();
       //e.stopPropagation();
+    });
+  }
+
+  if(document.getElementById("route-add-button") != null) {
+    document.getElementById("route-add-button").addEventListener("click", function (e) {
+      e.preventDefault();
+      //e.stopPropagation();
+      //input type="text" id="ride-finish" class="create-form-text" placeholder="Search for a place or click on the map" name="ride_end_point"
+      if(numberOfWaypoints < 10) {
+        var newItem = document.createElement("input");
+        newItem.setAttribute('name', 'waypoint' + numberOfWaypoints);
+        newItem.setAttribute('class', 'create-form-text');
+        newItem.setAttribute('type', 'text');
+        newItem.setAttribute('placeholder', 'Search for a place or click on the map');
+        numberOfWaypoints++;
+        var finish = document.getElementById("ride-finish-text");
+        finish.parentNode.insertBefore(newItem, finish);
+      }
     });
   }
 
@@ -16,7 +34,7 @@ window.addEventListener("load", function () {
       e.stopPropagation();
       // var opened = document.getElementById("create-ride").style.visibility;
       // document.getElementById("create-ride").style.visibility = "visible";
-      document.getElementById("create-ride").style.right = "0";
+      document.getElementById("create-ride-holder").style.right = "0";
     });
   }
 
@@ -24,7 +42,7 @@ window.addEventListener("load", function () {
     document.getElementById("create-close-button").addEventListener("click", function (e) {
       e.preventDefault();
       // var opened = document.getElementById("create-ride").style.visibility;
-      document.getElementById("create-ride").style.right = "-480px";
+      document.getElementById("create-ride-holder").style.right = "-500px";
       // document.getElementById("create-ride").style.visibility = "hidden";
     });
   }
@@ -111,4 +129,16 @@ window.addEventListener("load", function () {
 
     var directionsInstructionsControl = L.mapbox.directions.instructionsControl('instructions', directions).addTo(map);
 
+    var date = $('#dp_ride').fdatepicker({
+      format: 'mm-dd-yyyy',
+      disableDblClickSelection: true,
+      todayBtn: true
+    });
+
+    var time = $('#dp_time_ride').fdatepicker({
+      format: 'hh:ii',
+      startView: 1,
+      maxView: 1,
+      pickTime: true
+    });
 });

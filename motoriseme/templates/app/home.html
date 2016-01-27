@@ -8,7 +8,7 @@
       <div class="large-6 columns">
         <ul class="menu align-right">
           <li><a id="profile-button" class="profile-button" href="" data-toggle="user-dropdown"><img src="/assets/img/profile-pic.png" class="img-circle" alt="Profile image"></a></li>
-          <li><a id="create-ride-button" class="login-button" href="" ><img src="/assets/img/bike_icon.png" class="bike-icon" alt="Bike icon"> New Ride</a></li>
+          <li><a id="create-ride-button" class="login-button" href="" ><span class="bike-icon">&#xf21c;</span> New Ride</a></li>
         </ul>
       </div>
     </div>
@@ -126,12 +126,99 @@
       </div>
       <div id="map" class="row expanded">
       </div>
-      <div id="create-ride" class="">
+      <div id="create-ride-holder" class="">
         <div id="create-close-button" class="create-close-button">
           &#xf00d;
         </div>
-        <div class="create-header">
-          Create a new ride
+        <div id="create-ride" class="">
+          <div class="create-header">
+            Create a new ride
+          </div>
+          <form id="create-ride-form" method="POST" action="">
+            <div class="row expanded">
+              <div class="large-10 columns large-centered create-image-input">
+                <a href="">add image</a>
+                <br>
+                (min size) 460x110px
+              </div>
+            </div>
+            <div class="row expanded">
+              <div class="large-10 columns large-centered create-form-input">
+                <input class="create-form-text" type="text" placeholder="Name of your ride*" name="ride_name">
+              </div>
+            </div>
+            <div class="row expanded">
+              <div class="large-5 large-offset-1 columns create-form-input">
+                <input type="text" class="create-form-text" placeholder="Ride date" id="dp_ride" name="ride_date">
+                <!-- <input class="date create-form-text" type="text" placeholder="" name="ride_date"> -->
+              </div>
+              <div class="large-5 columns create-form-input">
+                <input type="text" class="create-form-text" placeholder="Time" id="dp_time_ride" name="ride_time">
+              </div>
+              <div class="large-1 columns">
+              </div>
+            </div>
+            <div class="row expanded">
+              <div class="large-10 large-centered columns create-form-input">
+                <input type="checkbox" name="public_ride"> Public Ride
+
+                <input type="checkbox" name="noob_friendly"> Noob Friendly
+              </div>
+            </div>
+            <div class="row expanded">
+              <div class="large-10 large-centered columns create-form-input">
+                <div class="sidetext">Plan your ride</div>
+                <hr class="sideline">
+              </div>
+            </div>
+            <div class="row expanded">
+              <div class="large-10 large-centered columns create-form-input">
+                Start
+                <input type="text" class="create-form-text" placeholder="Search for a place or click on the map" name="ride_start_point">
+                <div id="route-add-button" class="route-add-button">&#xf067;</div>
+                <div id="ride-finish-text">Finish</div>
+                <input type="text" id="ride-finish" class="create-form-text" placeholder="Search for a place or click on the map" name="ride_end_point">
+              </div>
+            </div>
+            <div class="row expanded">
+              <div class="large-10 large-centered columns create-form-input">
+                <select id="road-type" class="road-type">
+                  <option value="" disabled selected>Road type</option>
+                  <option value="">wtf</option>
+                  <option value="">lol</option>
+                  <option value="">idk</option>
+                  <option value="">haha</option>
+                </select>
+              </div>
+            </div>
+            <div class="row expanded">
+              <div class="large-10 large-centered columns create-form-input">
+                <div class="sidetext">Invite bikers</div>
+                <hr class="sideline">
+              </div>
+            </div>
+            <div class="row expanded">
+              <div class="large-10 large-centered columns create-form-input">
+                <input type="text" class="create-form-text" placeholder="Search friends' names or type e-mail address" name="ride_friend_invite">
+              </div>
+            </div>
+            <div class="row expanded">
+              <div class="large-10 large-centered columns create-form-input">
+                <ul class="ride_participants">
+                  <li><span id="list-name" class="list-name">Valentino Rossi</span><span id="list-icon" class="list-icon">&#xf003;</span></li>
+                  <li><span id="list-name" class="list-name">M. Marquez</span><span id="list-icon" class="list-icon green">&#xf00c;</span></li>
+                  <li><span id="list-name" class="list-name">Stoner</span><span id="list-icon" class="list-icon red">&#xf00d;</span></li>
+                  <li><span id="list-name" class="list-name">Stefan Bradl</span><span id="list-icon" class="list-icon">&#xf128;</span></li>
+                  <li><span id="list-name" class="list-name">Roskata</span><span id="list-icon" class="list-icon green">&#xf00c;</span></li>
+                </ul>
+              </div>
+            </div>
+            <div class="row expanded">
+              <div class="large-10 large-centered columns create-form-input">
+                <input type="button" class="create-form-button" id="create-form-button" value="Create Ride">
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     <!-- </div> -->
