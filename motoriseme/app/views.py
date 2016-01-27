@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from app.models import Rider, Event, Comment, Notification, Motorbike, Friendship
+from app.models import Rider, Event, Comment, Notification, Motorbike, Friendship, LeanAngle
 from django.shortcuts import redirect
 
 full_page = 'full_page'
@@ -486,10 +486,22 @@ def remove_friend(request):
 def get_user_friends(request):
     if request.method == 'GET':
         if request.user.is_authenticated():
-            friends = Friendship.get_user_friends(user_id)
+            friends = Friendship.get_user_friends(request.GET['user_id'])
             httpResponseContent = Friendship.to_json(friends)
         else:
             httpResponseContent = 'Failed to get user friends: not authenticated'
     else:
         httpResponseContent = 'Failed to get user friends'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def get_user_angles(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated():
+            all_angles = LeanAngle.get_user_angles(request.GET['user_id'])
+            httpResponseContent = LeanAngle.to_json(all_angles)
+        else: 
+            httpResponseContent = 'Failed to get user angles: not authenticated'
+    else:
+        httpResponseContent = 'Failed to get user angles'
     return HttpResponse(content=httpResponseContent, content_type='application/json')

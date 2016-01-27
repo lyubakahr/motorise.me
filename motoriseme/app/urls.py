@@ -38,5 +38,6 @@ urlpatterns = [
     url(r'^decline_friend_request$', views.decline_friend_request, name='decline_friend_request'),
     url(r'^remove_friend$', views.remove_friend, name='remove_friend'),
     url(r'^get_user_friends$', views.get_user_friends, name='get_user_friends'),
+    url(r'^get_user_angles$', views.get_user_angles, name='get_user_angles'),
 ]
 
