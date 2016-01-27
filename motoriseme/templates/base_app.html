@@ -7,7 +7,9 @@
     <title>motorise.me</title>
     <link rel="stylesheet" href="/assets/css/foundation.css" />
     <link rel="stylesheet" href="/assets/css/app.css" />
-
+    {% if style %}
+      <link rel="stylesheet" href="/assets/css/{{style}}.css" />
+    {% endif %}
     <script src='https://api.mapbox.com/mapbox.js/v2.2.4/mapbox.js'></script>
     <link href='https://api.mapbox.com/mapbox.js/v2.2.4/mapbox.css' rel='stylesheet' />
   </head>

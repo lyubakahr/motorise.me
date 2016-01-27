@@ -2,13 +2,118 @@
 
 {% block content %}
     <div class="row header logged-in expanded">
-      <div class="large-7 columns title">
+      <div class="large-6 columns title">
         motorise.me
       </div>
-      <div class="large-5 columns">
+      <div class="large-6 columns">
         <ul class="menu align-right">
-          <li><a id="profile-button" class="profile-button" href=""><img src="/assets/img/profile-pic.png" class="img-circle" alt="Profile image"></a></li>
-          <li><a class="login-button" href=""><img src="/assets/img/bike_icon.png" class="bike-icon" alt="Bike icon"> New Ride</a></li>
+          <li><a id="profile-button" class="profile-button" href="" data-toggle="user-dropdown"><img src="/assets/img/profile-pic.png" class="img-circle" alt="Profile image"></a></li>
+          <li><a class="login-button" href="" ><img src="/assets/img/bike_icon.png" class="bike-icon" alt="Bike icon"> New Ride</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id="filter" class="row expanded filter closed">
+      <div id="filter-content">
+        <div class="row expanded">
+          <div class="large-4 large-centered filter-title columns">
+            Map Explorer
+          </div>
+        </div>
+        <div class="row expanded">
+          <div class="large-4 large-centered columns">
+            <div class="row expanded">
+              <div class="large-6 filter-form columns">
+                Search Area:
+                <div class="row">
+                  <div class="large-1 columns awesome-icon">
+                    &#xf124;
+                  </div>
+                  <div class="filter-slider">
+                    <div class="large-10 columns slider" data-slider data-initial-start="0" data-end="200">
+                      <span class="slider-handle"  data-slider-handle role="slider" tabindex="1"></span>
+                      <span class="slider-fill" data-slider-fill></span>
+                      <input type="hidden">
+                    </div>
+                  </div>
+                  <div class="large-1 columns awesome-icon">
+                    &#xf0ac;
+                  </div>
+                </div>
+              </div>
+              <div class="large-6 filter-form columns">
+                Show on map:
+                <div class="row">
+                  <div class="large-6 columns">
+                    <div class="filter-checkbox">
+                      <input type="checkbox" name="rides">
+                      <div class="awesome-icon">
+                        &#xf0ac;
+                      </div>
+                      Public Rides
+                    </div>
+                  </div>
+                  <div class="large-6 columns">
+                    <div class="filter-checkbox">
+                      <input type="checkbox" name="rides">
+                      <div class="awesome-icon">
+                        &#xf1ae;
+                      </div>
+                      Noob Friendly
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="large-6 columns">
+                    <div class="filter-checkbox">
+                      <input type="checkbox" name="rides">
+                      <div class="awesome-icon">
+                        &#xf000;
+                      </div>
+                      Food & Drink
+                    </div>
+                  </div>
+                  <div class="large-6 columns">
+                    <div class="filter-checkbox">
+                      <input type="checkbox" name="rides">
+                      <div class="awesome-icon">
+                        &#xf19c;
+                      </div>
+                      Services
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row expanded">
+      <div id="expand-filter" data-expanded="false" class="filter expand-button">
+        &#xf078;
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="dropdown-pane bottom" id="user-dropdown" data-dropdown data-auto-focus="true">
+        <ul class="menu vertical dropdown">
+          <li class="disabled"><a disabled>You</a></li>
+          <li><a href="" >Profile & Account</a></li>
+          <li><a href="" >Notifications</a></li>
+          <li><a href="" >Privacy</a></li>
+          <li><a href="" >Help & Feedback</a></li>
+          <hr>
+          <li class="disabled"><a disabled>Bikers</a></li>
+          <li><a href="" >Your Firends</a></li>
+          <li><a href="" >Search public profiles</a></li>
+          <hr>
+          <li class="disabled"><a disabled>Rides</a></li>
+          <li><a href="" >Upcoming</a></li>
+          <li><a href="" >Past</a></li>
+          <hr>
+          <li class="disabled"><a disabled>motorise.me</a></li>
+          <li><a href="/logout" >Logout</a></li>
         </ul>
       </div>
     </div>
@@ -18,10 +123,7 @@
     <!-- </div> -->
     <div class="footer-bottom">
       <div class="row expanded">
-        <div class="large-2 columns title">
-          motorise.me
-        </div>
-        <div class="large-5 columns footer-text-offset">
+        <div class="large-7 columns footer-text-offset">
           <p>© 2016 Asphalt Kings OOD</p>
         </div>
         <div class="large-5 columns">

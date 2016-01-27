@@ -5,12 +5,14 @@ from django.contrib.auth.models import User
 from app.models import Rider, Event, Comment, Notification, Motorbike, Friendship
 from django.shortcuts import redirect
 
+style = 'full_page'
+
 
 def index(request):
     if request.user.is_authenticated():
         return render(request, 'app/home.html', {'events': Event.objects.all()})
     else:
-        return render(request, 'app/index.html', {})
+        return render(request, 'app/index.html', {'style': style})
 
 
 def delete_event(request):
@@ -111,7 +113,7 @@ def register(request):
     if request.method == 'GET':
         if request.user.is_authenticated():
             return render(request, 'app/home.html', {})
-        return render(request, 'app/index.html', {})
+        return render(request, 'app/index.html',  {'style': style})
     else:
         if request.user.is_authenticated():
             return render(request, 'app/home.html', {})
