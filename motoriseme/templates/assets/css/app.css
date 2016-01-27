@@ -20,6 +20,7 @@ html{
 }
 
 body {
+  transition-timing-function: ease-out;
   height:100%;
   width:100%;
   overflow:hidden;
@@ -229,6 +230,10 @@ body {
   /*overflow: hidden;*/
 }
 
+.dropdown-pane {
+
+}
+
 #user-dropdown {
   border-radius: 4px;
   border-style: solid;
@@ -294,6 +299,7 @@ body {
 
 .filter {
   height: 5px;
+  transition: 1s height;
   background-color: #2630a6;
 }
 
@@ -380,4 +386,39 @@ body {
   border-left: 1px solid #999;
   border-right: 1px solid #999;
   color: #fff;
+}
+
+#create-ride {
+  /*border: 1px solid red;*/
+  /*visibility: hidden;*/
+  width: 455px;
+  top: 70px;
+  right: -480px;
+  transition: 1s right;
+  position: fixed;
+  height: 100%;
+  background-color:  #e3e3e3;
+  box-shadow: 1px 2px 4px 0px rgba(0, 0, 0, 0.35);
+}
+
+.create-header {
+  background-color: #69b834;
+  height: 70px;
+  font-family: 'OpenSans';
+  color: #fff;
+  font-size: 36px;
+  font-weight: 700;
+  padding-top: 10px;
+  padding-left: 15px;
+}
+
+.create-close-button {
+  float: left;
+  cursor: pointer;
+  font-family: 'FontAwesome';
+  color: #69b834;
+  font-size: 24px;
+  font-weight: 400;
+  position: relative;
+  left: -24px;
 }

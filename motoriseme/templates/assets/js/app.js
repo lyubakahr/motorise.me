@@ -10,14 +10,35 @@ window.addEventListener("load", function () {
     });
   }
 
+  if(document.getElementById("create-ride-button") != null) {
+    document.getElementById("create-ride-button").addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      // var opened = document.getElementById("create-ride").style.visibility;
+      // document.getElementById("create-ride").style.visibility = "visible";
+      document.getElementById("create-ride").style.right = "0";
+    });
+  }
+
+  if(document.getElementById("create-close-button") != null) {
+    document.getElementById("create-close-button").addEventListener("click", function (e) {
+      e.preventDefault();
+      // var opened = document.getElementById("create-ride").style.visibility;
+      document.getElementById("create-ride").style.right = "-480px";
+      // document.getElementById("create-ride").style.visibility = "hidden";
+    });
+  }
+
   if(document.getElementById("expand-filter") != null) {
     document.getElementById("expand-filter").addEventListener("click", function (e) {
       e.preventDefault();
       var expanded = document.getElementById("expand-filter").getAttribute('data-expanded');
       //alert(expanded);
       if(expanded == "true") {
-        document.getElementById("filter-content").style.visibility = "hidden";
         document.getElementById("filter").style.height = "5px";
+        setTimeout(function() {
+          document.getElementById("filter-content").style.visibility = "hidden";
+        },1000);
         document.getElementById("expand-filter").innerHTML = "&#xf078;";
         document.getElementById("expand-filter").setAttribute('data-expanded', "false");
       } else {
@@ -39,39 +60,55 @@ window.addEventListener("load", function () {
       form.submit();
     });
   }
-  
-  L.mapbox.accessToken = 'pk.eyJ1IjoidG9zaGxlIiwiYSI6ImNpanR4dzIxODAwMGx0em00eDNwb2c1dnEifQ.0AEcgIpeNUpMCQc5HvKr6A';
-  var map = L.mapbox.map('map', 'mapbox.streets');
+  //if(document.getElementById("map") != null) {
+    L.mapbox.accessToken = 'pk.eyJ1IjoidG9zaGxlIiwiYSI6ImNpanR4dzIxODAwMGx0em00eDNwb2c1dnEifQ.0AEcgIpeNUpMCQc5HvKr6A';
+    var map = L.mapbox.map('map', 'mapbox.streets');
 
-  var myLayer = L.mapbox.featureLayer().addTo(map);
+    var myLayer = L.mapbox.featureLayer().addTo(map);
 
-  if (!navigator.geolocation) {
-    alert('Geolocation is not available');
-  } else {
-    map.locate();
-  }
+    if (!navigator.geolocation) {
+      alert('Geolocation is not available');
+    } else {
+      map.locate();
+    }
 
-  map.on('locationfound', function(e) {
-    map.fitBounds(e.bounds);
+    map.on('locationfound', function(e) {
+      map.fitBounds(e.bounds);
 
-    myLayer.setGeoJSON({
-      type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates: [e.latlng.lng, e.latlng.lat]
-      },
-      properties: {
-        'title': 'Here I am!',
-        'marker-color': '#ff8888',
-        'marker-symbol': 'star'
-      }
+      myLayer.setGeoJSON({
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [e.latlng.lng, e.latlng.lat]
+        },
+        properties: {
+          'title': 'Here I am!',
+          'marker-color': '#ff8888',
+          'marker-symbol': 'star'
+        }
+      });
+
     });
 
-  });
+    map.on('locationerror', function(e) {
+      console.log(e);
+    });
+  //}
+    map.addControl(L.mapbox.geocoderControl('mapbox.places', {
+        autocomplete: true
+    }));
+    L.control.locate().addTo(map);
+    var directions = L.mapbox.directions();
 
-  map.on('locationerror', function(e) {
-    console.log(e);
-  });
+    var directionsLayer = L.mapbox.directions.layer(directions).addTo(map);
 
+    var directionsInputControl = L.mapbox.directions.inputControl('inputs', directions).addTo(map);
+
+
+    var directionsErrorsControl = L.mapbox.directions.errorsControl('errors', directions).addTo(map);
+
+    var directionsRoutesControl = L.mapbox.directions.routesControl('routes', directions).addTo(map);
+
+    var directionsInstructionsControl = L.mapbox.directions.instructionsControl('instructions', directions).addTo(map);
 
 });

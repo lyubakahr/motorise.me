@@ -7,11 +7,19 @@
     <title>motorise.me</title>
     <link rel="stylesheet" href="/assets/css/foundation.css" />
     <link rel="stylesheet" href="/assets/css/app.css" />
+    {% if full_page %}
+      <link rel="stylesheet" href="/assets/css/{{full_page}}.css" />
+    {% endif %}
     {% if style %}
       <link rel="stylesheet" href="/assets/css/{{style}}.css" />
     {% endif %}
     <script src='https://api.mapbox.com/mapbox.js/v2.2.4/mapbox.js'></script>
     <link href='https://api.mapbox.com/mapbox.js/v2.2.4/mapbox.css' rel='stylesheet' />
+    <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js'></script>
+    <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.mapbox.css' rel='stylesheet' />
+    <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/css/font-awesome.min.css' rel='stylesheet' />
+    <script src='https://api.mapbox.com/mapbox.js/plugins/mapbox-directions.js/v0.4.0/mapbox.directions.js'></script>
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox.js/plugins/mapbox-directions.js/v0.4.0/mapbox.directions.css' type='text/css' />
   </head>
   <body>
     {% block content %}
