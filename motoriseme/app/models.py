@@ -270,3 +270,31 @@ class Friendship(models.Model):
         for friendship in friendships:
             friends.append(friendship.friend.username)
         return json.dumps({'friends': friends})
+
+
+class LeanAngle (models.Model):
+    user = models.ForeignKey(Rider)
+    angle = models.FloatField()
+
+    @classmethod
+    def get_all(cls):
+        return cls.objects.all()
+
+    @classmethod
+    def get_user_angles(cls, user_id):
+        return cls.objects.raw('SELECT * FROM app_leanangle WHERE user_id = ' + str(user_id))
+
+    @classmethod
+    def get_avarage(cls, user_id):
+        return cls.objects.raw('SELECT AVG(angle) FROM app_leanangle WHERE user_id = ' + str(user_id))
+
+    @classmethod
+    def get_best(cls, user_id):
+        return cls.objects.raw('SELECT MAX(angle) FROM app_leanangle WHERE user_id = ' + str(user_id))
+
+    @classmethod
+    def to_json(cls, angles):
+        angles_data = []
+        for lean_angle in angles:
+            angles_data.append(lean_angle.angle)
+        return json.dumps({'lean_angles': angles_data})

@@ -959,7 +959,7 @@ bool leaned_bike = false;
 float angle_treshold = 25.0;
 
 void socket_server_connect() {
-  client.connect("172.20.10.8", 55666);
+  client.connect("172.20.10.6", 55666);
 }
 
 void loop()
