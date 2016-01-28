@@ -559,3 +559,38 @@ def get_user_events(request):
     else:
         httpResponseContent = 'Failed to get user events'
     return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+# hardcoded for demo
+def get_event_route(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated():
+            route = [
+                {
+                    'id': 1,
+                    'coordinates': '42.657930,23.271735',
+                    'type': 'start'
+                },
+                {
+                    'id': 2,
+                    'coordinates': '42.598735,23.123334',
+                    'type': 'waypoint'
+                },
+                {
+                    'id': 3,
+                    'coordinates': '42.009082,23.047088',
+                    'type': 'waypoint'
+                },   
+                {
+                    'id': 4,
+                    'coordinates': '41.679427,23.184911',
+                    'type': 'end'
+                }
+            ]
+            import json
+            httpResponseContent = json.dumps(route)
+        else: 
+            httpResponseContent = 'Failed to get event route: not authenticated'
+    else:
+        httpResponseContent = 'Failed to get event route'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
