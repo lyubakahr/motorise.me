@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from app.models import Rider, Event, Comment, Notification, Motorbike, Friendship, LeanAngle
 from django.shortcuts import redirect
+from datetime import datetime
+
 
 full_page = 'full_page'
 style = 'index'
@@ -35,13 +37,15 @@ def delete_event(request):
 def create_event(request):
     if request.method == 'POST':
         if request.user.is_authenticated():
-            event = Event(name = request.POST['name'],
-                          date = request.POST['date'],
-                          start_point = request.POST['start_point'],
-                          start_point_coordinates = request.POST['start_point_coordinates'],
-                          end_point = request.POST['end_point'],
-                          end_point_coordinates = request.POST['end_point_coordinates'],
-                          description = request.POST['description'],
+            date = request.POST['ride_date'] + " " + request.POST['ride_time']
+            date = datetime.strptime(date, '%m-%d-%Y %H:%M')
+            event = Event(name = request.POST['ride_name'],
+                          date = date,
+                          start_point = request.POST['ride_start_point'],
+                          start_point_coordinates = 'start_point',#request.POST['start_point_coordinates'],
+                          end_point = request.POST['ride_end_point'],
+                          end_point_coordinates = 'end_point', #request.POST['end_point_coordinates'],
+                          description = 'description', #request.POST['description'],
                           noob_friendly = request.POST['noob_friendly'],
                           creator = request.user)
             event.save()
