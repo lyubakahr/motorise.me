@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from app.models import Rider, Event, Comment, Notification, Motorbike, Friendship, LeanAngle
+from app.models import Rider, Event, Comment, Notification, Motorbike, Friendship, LeanAngle, EventAttendance
 from django.shortcuts import redirect
 from datetime import datetime
 
@@ -508,4 +508,54 @@ def get_user_angles(request):
             httpResponseContent = 'Failed to get user angles: not authenticated'
     else:
         httpResponseContent = 'Failed to get user angles'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def join_event(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated():
+            event_attendance = EventAttendance(user=request.user, event=Event.get(request.GET['event_id']))
+            event_attendance.save()
+            httpResponseContent = 'Event joined successfully'
+        else: 
+            httpResponseContent = 'Failed to join event: not authenticated'
+    else:
+        httpResponseContent = 'Failed to join event'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def leave_event(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated():
+            event_attendance = EventAttendance.get_event_attendance(user_id=request.user.id, event_id=request.POST['event_id'])
+            event_attendance.delete()
+            httpResponseContent = 'Event left successfully'
+        else: 
+            httpResponseContent = 'Failed to leave event: not authenticated'
+    else:
+        httpResponseContent = 'Failed to leave event'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def get_event_attendees(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated():
+            event_attendances = EventAttendance.get_event_attendees(request.GET['event_id'])
+            httpResponseContent = EventAttendance.to_json(event_attendances)
+        else: 
+            httpResponseContent = 'Failed to get event attendees: not authenticated'
+    else:
+        httpResponseContent = 'Failed to get event attendees'
+    return HttpResponse(content=httpResponseContent, content_type='application/json')
+
+
+def get_user_events(request):
+    if request.method == 'GET':
+        if request.user.is_authenticated():
+            event_attendances = EventAttendance.get_user_events(request.GET['user_id'])
+            httpResponseContent = EventAttendance.to_json(event_attendances)
+        else: 
+            httpResponseContent = 'Failed to get user events: not authenticated'
+    else:
+        httpResponseContent = 'Failed to get user events'
     return HttpResponse(content=httpResponseContent, content_type='application/json')

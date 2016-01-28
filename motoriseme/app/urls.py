@@ -39,5 +39,9 @@ urlpatterns = [
     url(r'^remove_friend$', views.remove_friend, name='remove_friend'),
     url(r'^get_user_friends$', views.get_user_friends, name='get_user_friends'),
     url(r'^get_user_angles$', views.get_user_angles, name='get_user_angles'),
+    url(r'^join_event$', views.join_event, name='join_event'),
+    url(r'^leave_event$', views.leave_event, name='leave_event'),
+    url(r'^get_event_attendees$', views.get_event_attendees, name='get_event_attendees'),
+    url(r'^get_user_events$', views.get_user_events, name='get_user_events'),
 ]
 

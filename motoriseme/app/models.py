@@ -272,6 +272,37 @@ class Friendship(models.Model):
         return json.dumps({'friends': friends})
 
 
+class EventAttendance(models.Model):
+    user = models.ForeignKey(Rider)
+    event = models.ForeignKey(Event)
+
+    @classmethod
+    def get_all(cls):
+        return cls.objects.all()
+
+    @classmethod
+    def get_user_events(cls, user_id):
+        return cls.objects.raw('SELECT * FROM app_eventattendance WHERE user_id = ' + str(user_id))
+
+    @classmethod
+    def get_event_attendees(cls, event_id):
+        return cls.objects.raw('SELECT * FROM app_eventattendance WHERE event_id = ' + str(event_id))
+
+    @classmethod
+    def get_event_attendance(cls, user_id, event_id):
+        return cls.objects.raw('SELECT * FROM app_eventattendance WHERE event_id = ' + str(event_id) + ' AND user_id = ' + str(user_id))
+
+    @classmethod
+    def to_json(cls, attendances):
+        context = []
+        for attendance in attendances:
+            json_attendance = {
+                'user': attendance.user.name,
+                'event_id': attendance.event.id
+            }
+        return json.dumps(context)
+
+
 class LeanAngle (models.Model):
     user = models.ForeignKey(Rider)
     angle = models.FloatField()
