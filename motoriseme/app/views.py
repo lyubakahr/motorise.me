@@ -568,57 +568,22 @@ def get_event_route(request):
             route = [
                 {
                     'id': 1,
-                    'coordinates': '41.073053,23.517944',
+                    'coordinates': '42.657930,23.271735',
                     'type': 'start'
                 },
                 {
                     'id': 2,
-                    'coordinates': '41.070433,23.521692',
+                    'coordinates': '42.598735,23.123334',
                     'type': 'waypoint'
                 },
                 {
                     'id': 3,
-                    'coordinates': '41.069701,23.519938',
+                    'coordinates': '42.009082,23.047088',
                     'type': 'waypoint'
-                },
+                },   
                 {
                     'id': 4,
-                    'coordinates': '41.070761,23.517552',
-                    'type': 'waypoint'
-                },
-                {
-                    'id': 5,
-                    'coordinates': '41.070293,23.515667',
-                    'type': 'waypoint'
-                },
-                {
-                    'id': 6,
-                    'coordinates': '41.072075,23.516310',
-                    'type': 'waypoint'
-                },
-                {
-                    'id': 7,
-                    'coordinates': '41.073496,23.513313',
-                    'type': 'waypoint'
-                },
-                {
-                    'id': 8,
-                    'coordinates': '41.070117,23.515100',
-                    'type': 'waypoint'
-                },
-                {
-                    'id': 9,
-                    'coordinates': '41.073439,23.511723',
-                    'type': 'waypoint'
-                },
-                {
-                    'id': 10,
-                    'coordinates': '41.074667,23.515576',
-                    'type': 'waypoint'
-                },
-                {
-                    'id': 11,
-                    'coordinates': '41.073053,23.517944',
+                    'coordinates': '41.679427,23.184911',
                     'type': 'end'
                 }
             ]
