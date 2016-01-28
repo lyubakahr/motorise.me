@@ -55,6 +55,25 @@ window.addEventListener("load", function () {
     });
   }
 
+  if(document.getElementById("telemetry-open-button") != null) {
+    document.getElementById("telemetry-open-button").addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      // var opened = document.getElementById("create-ride").style.visibility;
+      // document.getElementById("create-ride").style.visibility = "visible";
+      document.getElementById("telemetry-holder").style.right = "0";
+    });
+  }
+
+  if(document.getElementById("telemetry-close-button") != null) {
+    document.getElementById("telemetry-close-button").addEventListener("click", function (e) {
+      e.preventDefault();
+      // var opened = document.getElementById("create-ride").style.visibility;
+      document.getElementById("telemetry-holder").style.right = "-520px";
+      // document.getElementById("create-ride").style.visibility = "hidden";
+    });
+  }
+
   if(document.getElementById("create-close-button") != null) {
     document.getElementById("create-close-button").addEventListener("click", function (e) {
       e.preventDefault();
@@ -209,4 +228,21 @@ window.addEventListener("load", function () {
       maxView: 1,
       pickTime: true
     });
+
+    var canvas = document.getElementById("gauge");
+    canvas.addEventListener('load', function() {
+      var ctx = canvas.getContext("2d");
+
+
+    var source = new Image();
+    source.src = '/assets/img/graph background.svg';
+    source.width = '100';
+    source.height = '100';
+    // Render our SVG image to the canvas once it loads.
+    source.onload = function(){
+        ctx.drawImage(source,0,0);
+    }
+    });
+    
+
 });
