@@ -64,6 +64,15 @@ window.addEventListener("load", function () {
     });
   }
 
+  if(document.getElementById("view-close-button") != null) {
+    document.getElementById("view-close-button").addEventListener("click", function (e) {
+      e.preventDefault();
+      // var opened = document.getElementById("view-ride").style.visibility;
+      document.getElementById("view-ride-holder").style.right = "-500px";
+      // document.getElementById("view-ride").style.visibility = "hidden";
+    });
+  }
+
   if(document.getElementById("expand-filter") != null) {
     document.getElementById("expand-filter").addEventListener("click", function (e) {
       e.preventDefault();
@@ -120,15 +129,34 @@ window.addEventListener("load", function () {
                             coordinates: [startlng, startlat]
                           },
                           properties: {
-                            'title': feature.name,
                             'marker-color': '#88ff88',
-                            'marker-symbol': 'embassy'
+                            'marker-symbol': 'embassy',
+                            'id': feature.id
                           }
                         });
         });
         myLayer.setGeoJSON({
-            type: "FeatureCollection",
-            features: features
+          type: "FeatureCollection",
+          features: features
+        });
+        myLayer.on('click', function(e) {
+          console.log(e);
+          var marker = e.layer.feature;
+          console.log(marker);
+          document.getElementById("view-ride-holder").style.right = "0";
+          var url = "/read_event";
+          var request = $.ajax({
+            url: url,
+            data: "id=" + marker.properties.id
+          });
+          request.done(function(result) {
+            console.log(result[0]);
+            document.getElementById("view-header").innerHTML = result[0].name;
+            document.getElementById("view-ride-start").innerHTML = result[0].start_point;
+            document.getElementById("view-ride-finish").innerHTML = result[0].end_point;
+          }).fail(function(jqXHR, statusText) {
+            console.log("failed to get event: " + statusText);
+          });
         });
       }).fail(function(jqXHR, statusText) {
         console.log("Failed to get events: " + statusText);
