@@ -1,7 +1,24 @@
 $(document).foundation();
 
+
 window.addEventListener("load", function () {
   var numberOfWaypoints = 0;
+
+  this.getEventMarkers = function() {
+    // /read_user_events
+    var url = "/read_user_events";
+    this.features = [];
+    console.log(this);
+    var that = this;
+    var request = $.ajax({
+      url: url,
+      method: "GET"
+      // error: function(jqXHR, textStatus) {
+      //   console.log("Failed to get events: " + textStatus);
+      // }
+    });
+    return request;
+  }
 
   if(document.getElementById("profile-button") != null) {
     document.getElementById("profile-button").addEventListener("click", function (e) {
@@ -81,8 +98,43 @@ window.addEventListener("load", function () {
   //if(document.getElementById("map") != null) {
     L.mapbox.accessToken = 'pk.eyJ1IjoidG9zaGxlIiwiYSI6ImNpanR4dzIxODAwMGx0em00eDNwb2c1dnEifQ.0AEcgIpeNUpMCQc5HvKr6A';
     var map = L.mapbox.map('map', 'mapbox.streets');
-
     var myLayer = L.mapbox.featureLayer().addTo(map);
+    var that = this;
+    map.on('ready', function(e) {
+      console.log("that");
+      console.log(that);
+      var req = that.getEventMarkers();
+      req.done(function(result) {
+        var data = result;
+        var features = [];
+        data.forEach(function(feature) {
+          var startlng = feature.start_point_coordinates.split(",")[0];
+          var startlat = feature.start_point_coordinates.split(",")[1];
+          var endlng = feature.end_point_coordinates.split(",")[0];
+          var endlat = feature.end_point_coordinates.split(",")[1];
+
+          features.push({
+                          type: 'Feature',
+                          geometry: {
+                            type: 'Point',
+                            coordinates: [startlng, startlat]
+                          },
+                          properties: {
+                            'title': feature.name,
+                            'marker-color': '#88ff88',
+                            'marker-symbol': 'embassy'
+                          }
+                        });
+        });
+        myLayer.setGeoJSON({
+            type: "FeatureCollection",
+            features: features
+        });
+      }).fail(function(jqXHR, statusText) {
+        console.log("Failed to get events: " + statusText);
+      });
+      
+    });
 
     if (!navigator.geolocation) {
       alert('Geolocation is not available');
@@ -92,20 +144,7 @@ window.addEventListener("load", function () {
 
     map.on('locationfound', function(e) {
       map.fitBounds(e.bounds);
-
-      myLayer.setGeoJSON({
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: [e.latlng.lng, e.latlng.lat]
-        },
-        properties: {
-          'title': 'Here I am!',
-          'marker-color': '#ff8888',
-          'marker-symbol': 'star'
-        }
-      });
-
+      console.log(e.latlng.lng + " " + e.latlng.lat);
     });
 
     map.on('locationerror', function(e) {
@@ -116,18 +155,19 @@ window.addEventListener("load", function () {
         autocomplete: true
     }));
     L.control.locate().addTo(map);
-    var directions = L.mapbox.directions();
 
-    var directionsLayer = L.mapbox.directions.layer(directions).addTo(map);
+    // var directions = L.mapbox.directions();
 
-    var directionsInputControl = L.mapbox.directions.inputControl('inputs', directions).addTo(map);
+    // var directionsLayer = L.mapbox.directions.layer(directions).addTo(map);
+
+    // var directionsInputControl = L.mapbox.directions.inputControl('inputs', directions).addTo(map);
 
 
-    var directionsErrorsControl = L.mapbox.directions.errorsControl('errors', directions).addTo(map);
+    // var directionsErrorsControl = L.mapbox.directions.errorsControl('errors', directions).addTo(map);
 
-    var directionsRoutesControl = L.mapbox.directions.routesControl('routes', directions).addTo(map);
+    // var directionsRoutesControl = L.mapbox.directions.routesControl('routes', directions).addTo(map);
 
-    var directionsInstructionsControl = L.mapbox.directions.instructionsControl('instructions', directions).addTo(map);
+    // var directionsInstructionsControl = L.mapbox.directions.instructionsControl('instructions', directions).addTo(map);
 
     var date = $('#dp_ride').fdatepicker({
       format: 'mm-dd-yyyy',
