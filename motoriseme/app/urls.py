@@ -43,5 +43,6 @@ urlpatterns = [
     url(r'^leave_event$', views.leave_event, name='leave_event'),
     url(r'^get_event_attendees$', views.get_event_attendees, name='get_event_attendees'),
     url(r'^get_user_events$', views.get_user_events, name='get_user_events'),
+    url(r'^get_event_route$', views.get_event_route, name='get_event_route'),
 ]
 

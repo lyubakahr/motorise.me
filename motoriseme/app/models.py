@@ -71,6 +71,7 @@ class Event(models.Model):
         context = []
         for event in events:
             json_event = {
+                'id': event.id,
                 'name': event.name,
                 'date': str(event.date),
                 'start_point': event.start_point,
