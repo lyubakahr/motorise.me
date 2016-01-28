@@ -134,7 +134,8 @@
           <div class="create-header">
             Create a new ride
           </div>
-          <form id="create-ride-form" method="POST" action="">
+          <form id="create-ride-form" method="POST" action="/create_event">
+            {% csrf_token %}
             <div class="row expanded">
               <div class="large-10 columns large-centered create-image-input">
                 <a href="">add image</a>
@@ -215,7 +216,7 @@
             </div>
             <div class="row expanded">
               <div class="large-10 large-centered columns create-form-input">
-                <input type="button" class="create-form-button" id="create-form-button" value="Create Ride">
+                <input type="submit" class="create-form-button" id="create-form-button" value="Create Ride">
               </div>
             </div>
           </form>
