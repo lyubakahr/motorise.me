@@ -62,6 +62,8 @@ window.addEventListener("load", function () {
       // var opened = document.getElementById("create-ride").style.visibility;
       // document.getElementById("create-ride").style.visibility = "visible";
       document.getElementById("telemetry-holder").style.right = "0";
+      setTimeout(1000);
+      drawDegrees();
     });
   }
 
@@ -230,19 +232,26 @@ window.addEventListener("load", function () {
     });
 
     var canvas = document.getElementById("gauge");
-    canvas.addEventListener('load', function() {
-      var ctx = canvas.getContext("2d");
-
-
-    var source = new Image();
-    source.src = '/assets/img/graph background.svg';
-    source.width = '100';
-    source.height = '100';
-    // Render our SVG image to the canvas once it loads.
-    source.onload = function(){
-        ctx.drawImage(source,0,0);
-    }
-    });
-    
+    var ctx = canvas.getContext("2d");
+    var img = document.getElementById("gauge-img");
+    var drawDegrees = function() {
+      var degrees = 53;
+      var i = 0;
+      var refreshIntervalId = setInterval(function() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 150, 261, 157);
+        ctx.fillStyle = "#fff";
+        ctx.font = "40px Verdana";
+        ctx.fillText("" + i, 100, 255);
+        ctx.font = "20px Verdana";
+        ctx.fillText("o", 150, 230);
+        if(i < degrees) {
+          i++;
+        } else {
+          i = 0;
+          clearInterval(refreshIntervalId);
+        }
+      }, 20);
+    };
 
 });
