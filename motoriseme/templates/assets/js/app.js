@@ -6,7 +6,7 @@ window.addEventListener("load", function () {
 
   this.getEventMarkers = function() {
     // /read_user_events
-    var url = "/read_user_events";
+    var url = "/read_all_events";
     this.features = [];
     console.log(this);
     var that = this;
@@ -26,6 +26,34 @@ window.addEventListener("load", function () {
       //e.stopPropagation();
     });
   }
+
+  // if(document.getElementById("login-mock") != null) {
+  //   document.getElementById("login-mock").addEventListener("click", function (e) {
+  //     e.preventDefault();
+  //     e.stopPropagation();
+  //     method = "post"; // Set method to post by default if not specified.
+  //     path = "/login";
+  //     // The rest of this code assumes you are not using a library.
+  //     // It can be made less wordy if you use one.
+  //     var form = document.createElement("form");
+  //     form.setAttribute("method", method);
+  //     form.setAttribute("action", path);
+  //     params = {username: "tapa", password:"tapa"};
+  //     for(var key in params) {
+  //         if(params.hasOwnProperty(key)) {
+  //             var hiddenField = document.createElement("input");
+  //             hiddenField.setAttribute("type", "hidden");
+  //             hiddenField.setAttribute("name", key);
+  //             hiddenField.setAttribute("value", params[key]);
+
+  //             form.appendChild(hiddenField);
+  //          }
+  //     }
+
+  //     document.body.appendChild(form);
+  //     form.submit();
+  //   });
+  // }
 
   if(document.getElementById("route-add-button") != null) {
     document.getElementById("route-add-button").addEventListener("click", function (e) {
