@@ -66,6 +66,41 @@ window.addEventListener("load", function () {
       drawDegrees();
     });
   }
+  var aboutUs = false;
+  if(document.getElementById("aboutUs") != null) {
+    document.getElementById("aboutUs").addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if(aboutUs) {
+        document.getElementById("lyubo").style['z-index'] = "30";
+        document.getElementById("assen").style['z-index'] = "30";
+        document.getElementById("rosen").style.left = "-404px";
+        document.getElementById("lyubo").style.bottom = "-427px";
+        document.getElementById("assen").style.bottom = "-423px";
+        document.getElementById("drago").style.right = "-420px";
+      } else {
+        document.getElementById("drago").style.right = "-28px";
+        setTimeout(function() {
+          document.getElementById("lyubo").style.bottom = "40px";
+          setTimeout(function() {
+            document.getElementById("lyubo").style['z-index'] = "33";
+          }, 1000);
+          setTimeout(function() {
+            document.getElementById("assen").style.bottom = "55px";
+            setTimeout(function() {
+              document.getElementById("assen").style['z-index'] = "33";
+            }, 1000);
+            setTimeout(function() {
+              document.getElementById("rosen").style.left = "0";
+            }, 200);
+          }, 200);
+        }, 200);
+      }
+      aboutUs = !aboutUs;
+      // var opened = document.getElementById("create-ride").style.visibility;
+      // document.getElementById("create-ride").style.visibility = "hidden";
+    });
+  }
 
   if(document.getElementById("telemetry-close-button") != null) {
     document.getElementById("telemetry-close-button").addEventListener("click", function (e) {
@@ -234,12 +269,24 @@ window.addEventListener("load", function () {
     var canvas = document.getElementById("gauge");
     var ctx = canvas.getContext("2d");
     var img = document.getElementById("gauge-img");
+    var imgInfo = document.getElementById("gauge-info-img");
+    var imgArrow = document.getElementById("gauge-arrow-img");
     var drawDegrees = function() {
       var degrees = 53;
       var i = 0;
       var refreshIntervalId = setInterval(function() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, 0, 150, 261, 157);
+        ctx.drawImage(imgInfo, 130, 65, 237, 163);
+        ctx.translate(128, 153);
+        ctx.scale(1, -1);
+        ctx.translate(0, -100);
+        ctx.rotate(-i*Math.PI/180);
+        ctx.drawImage(imgArrow, 0, 0, 8, 91);
+        ctx.rotate(i*Math.PI/180);
+        ctx.translate(0, 100);
+        ctx.scale(1, -1);
+        ctx.translate(-128, -153);
         ctx.fillStyle = "#fff";
         ctx.font = "40px Verdana";
         ctx.fillText("" + i, 100, 255);
@@ -251,7 +298,7 @@ window.addEventListener("load", function () {
           i = 0;
           clearInterval(refreshIntervalId);
         }
-      }, 20);
+      }, 30);
     };
 
 });

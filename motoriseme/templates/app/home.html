@@ -271,8 +271,8 @@
           <div class="row expanded">
             <div class="large-10 large-centered columns create-form-input">
               <ul class="ride_participants">
-                <li><span id="list-name" class="list-name">Valentino Rossi</span><span id="list-icon" class="list-icon">&#xf003;</span></li>
-                <li><span id="list-name" class="list-name">M. Marquez</span><span id="list-icon" class="list-icon green">&#xf00c;</span></li>
+                <li><span id="list-name" class="list-name">Assen</span><span id="list-icon" class="list-icon green">&#xf00c;<!-- &#xf003; --></span></li>
+                <li><span id="list-name" class="list-name">Lyubaka</span><span id="list-icon" class="list-icon green">&#xf00c;</span></li>
                 <li><span id="list-name" class="list-name">Stoner</span><span id="list-icon" class="list-icon red">&#xf00d;</span></li>
                 <li><span id="list-name" class="list-name">Stefan Bradl</span><span id="list-icon" class="list-icon">&#xf128;</span></li>
               </ul>
@@ -378,14 +378,25 @@
           </div>
           
           <div class="row expanded">
-            <div class="large-10 large-centered columns create-form-input">
-              
+            <div class="large-10 large-centered columns best-telemetry-cont">
+              <div class="row">
+                <div class="large-6 columns">
+                  <span class="degrees">41&deg;</span><br>
+                  <span class="degrees-text">AVG. LEAN</span>
+                </div>
+                <div class="large-6 columns">
+                  <span class="degrees">53&deg;</span><br>
+                  <span class="degrees-text">MAX LEAN</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <img id="gauge-img" src="/assets/img/gaugex2.png">
+      <img id="gauge-info-img" src="/assets/img/angle-graph.png">
+      <img id="gauge-arrow-img" src="/assets/img/graph arrow.png">
 
 
 
@@ -404,7 +415,7 @@
             <li><a href="">HELP</a></li>
             <li><a href="">NEWS</a></li>
             <li><a href="">FEATURES</a></li>
-            <li><a href="">ABOUT US</a></li>
+            <li><a id="aboutUs" href="">ABOUT US</a></li>
           </ul>
         </div>
       </div>
