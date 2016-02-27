@@ -8,7 +8,7 @@ window.addEventListener("load", function () {
     // /read_user_events
     var url = "/read_all_events";
     this.features = [];
-    console.log(this);
+    //console.log(this);
     var that = this;
     var request = $.ajax({
       url: url,
@@ -20,10 +20,86 @@ window.addEventListener("load", function () {
     return request;
   }
 
+  var markers = {
+    origin: new L.marker([50.5, 30.5], {draggable: false}),
+    destination: new L.marker([50.3, 30.5], {draggable: false}),
+    waypoints: []
+  };
+  //console.log(markers);
+
+  this.hasRoutes = function(map) {
+     map.eachLayer(function (layer) {
+        if(layer.drawRoute) {
+          return true;
+        }
+    });
+     return false;
+  };
+
+  this.clearRoutes = function(map) {
+    map.eachLayer(function (layer) {
+      //console.log(layer);
+      if(layer.drawRoute) {
+        map.removeLayer(layer);
+      }
+    });
+  };
+
+  this.refreshMap = function(map) {
+    map.fire('click');
+  }
+
+  this.fadeMarkers = function(layer, opacity) {
+    layer.eachLayer(function(marker) {
+      //console.log(marker);
+      marker.setOpacity(opacity);
+    });
+  };
+
+
+  this.drawRoute = function(map, markers, rideInfo) {
+    this.fadeMarkers(markerLayer, 0.5);
+
+    this.clearRoutes(map);
+
+    var directions = L.mapbox.directions();
+    var directionsLayer = L.mapbox.directions.layer(directions);
+    directionsLayer.addTo(map);
+
+    directionsLayer.drawRoute = true;
+
+    directionsLayer._directions.setOrigin(markers.origin);
+    directionsLayer._directions.setDestination(markers.destination);
+    var origin = directionsLayer._directions.getOrigin();
+    var destination = directionsLayer._directions.getDestination();
+    origin.geometry.coordinates = [markers.origin.getLatLng().lng, markers.origin.getLatLng().lat];
+    destination.geometry.coordinates = [markers.destination.getLatLng().lng, markers.destination.getLatLng().lat];
+
+    directionsLayer.routeLayer.options.style.color = "#ff0000";
+
+    if(rideInfo.noob_friendly) {
+      directionsLayer.routeLayer.options.style.color = "#00aa00";
+    }
+    directionsLayer.originMarker.options.draggable = false;
+    directionsLayer.destinationMarker.options.draggable = false;
+    var directionsRoutesControl = L.mapbox.directions.routesControl('routes', directions).addTo(map);
+
+    map.fire('click');
+  };
+  var that = this;
   if(document.getElementById("profile-button") != null) {
     document.getElementById("profile-button").addEventListener("click", function (e) {
       e.preventDefault();
       //e.stopPropagation();
+    });
+  }
+
+  if(document.getElementById("register-form") != null) {
+    $("#register-form input").keypress(function(event) {
+      if (event.which == 13) {
+          event.preventDefault();
+          $("#register-form").submit();
+      }
     });
   }
 
@@ -153,6 +229,24 @@ window.addEventListener("load", function () {
       e.preventDefault();
       // var opened = document.getElementById("view-ride").style.visibility;
       document.getElementById("view-ride-holder").style.right = "-500px";
+      var route = {
+        origin: new L.marker([0, 0], {draggable: false}),
+        destination: new L.marker([0, 0], {draggable: false}),
+        waypoints: []
+      };
+
+      var directions = L.mapbox.directions();
+      //var layer = L.mapbox.directions.layer(directions);
+      map.eachLayer(function (layer) {
+        //console.log(layer);
+        if(layer.drawRoute) {
+          map.removeLayer(layer);
+        }
+      });
+
+      //map.addLayer(markerLayer);
+      that.fadeMarkers(markerLayer, 1);
+      //$('#map').trigger('click');
       // document.getElementById("view-ride").style.visibility = "hidden";
     });
   }
@@ -163,14 +257,16 @@ window.addEventListener("load", function () {
       var expanded = document.getElementById("expand-filter").getAttribute('data-expanded');
       //alert(expanded);
       if(expanded == "true") {
+        document.getElementById("filter-content").style.visibility = "hidden";
         document.getElementById("filter").style.height = "5px";
-        setTimeout(function() {
-          document.getElementById("filter-content").style.visibility = "hidden";
-        },1000);
+        document.getElementById("expand-filter").style.top = "72px";
         document.getElementById("expand-filter").innerHTML = "&#xf078;";
         document.getElementById("expand-filter").setAttribute('data-expanded', "false");
       } else {
-        document.getElementById("filter-content").style.visibility = "visible";
+        setTimeout(function() {
+          document.getElementById("filter-content").style.visibility = "visible";
+        },1000);
+        document.getElementById("expand-filter").style.top = "270px";
         document.getElementById("filter").style.height = "200px";
         document.getElementById("expand-filter").innerHTML = "&#xf077;";
         document.getElementById("expand-filter").setAttribute('data-expanded', "true");
@@ -191,11 +287,16 @@ window.addEventListener("load", function () {
   //if(document.getElementById("map") != null) {
     L.mapbox.accessToken = 'pk.eyJ1IjoidG9zaGxlIiwiYSI6ImNpanR4dzIxODAwMGx0em00eDNwb2c1dnEifQ.0AEcgIpeNUpMCQc5HvKr6A';
     var map = L.mapbox.map('map', 'mapbox.streets');
-    var myLayer = L.mapbox.featureLayer().addTo(map);
+    var markerLayer = L.mapbox.featureLayer().addTo(map);
+
+    // var directions = L.mapbox.directions();
+    // var directionsLayer = L.mapbox.directions.layer(directions);
+    // directionsLayer.addTo(map);
+
     var that = this;
     map.on('ready', function(e) {
-      console.log("that");
-      console.log(that);
+      //console.log("that");
+      //console.log(that);
       var req = that.getEventMarkers();
       req.done(function(result) {
         var data = result;
@@ -219,14 +320,15 @@ window.addEventListener("load", function () {
                           }
                         });
         });
-        myLayer.setGeoJSON({
+        markerLayer.setGeoJSON({
           type: "FeatureCollection",
           features: features
         });
-        myLayer.on('click', function(e) {
-          console.log(e);
+        markerLayer.on('click', function(e) {
+          map.panTo(e.layer.getLatLng());
+          //console.log(e);
           var marker = e.layer.feature;
-          console.log(marker);
+          //console.log(marker);
           document.getElementById("view-ride-holder").style.right = "0";
           var url = "/read_event";
           var request = $.ajax({
@@ -234,10 +336,24 @@ window.addEventListener("load", function () {
             data: "id=" + marker.properties.id
           });
           request.done(function(result) {
-            console.log(result[0]);
+            //console.log(result[0]);
             document.getElementById("view-header").innerHTML = result[0].name;
             document.getElementById("view-ride-start").innerHTML = result[0].start_point;
             document.getElementById("view-ride-finish").innerHTML = result[0].end_point;
+            if(result[0].noob_friendly) {
+              document.getElementById("nfSpan").style.visibility = "visible";
+            } else {
+              document.getElementById("nfSpan").style.visibility = "hidden";
+            }
+            var origin_coords = result[0].start_point_coordinates.split(',');
+            var dest_coords = result[0].end_point_coordinates.split(',');
+            var route = {
+              origin: new L.marker([origin_coords[1], origin_coords[0]], {draggable: false}),
+              destination: new L.marker([dest_coords[1], dest_coords[0]], {draggable: false}),
+              waypoints: []
+            };
+
+            that.drawRoute(map, route, result[0]);
           }).fail(function(jqXHR, statusText) {
             console.log("failed to get event: " + statusText);
           });
@@ -268,18 +384,21 @@ window.addEventListener("load", function () {
     }));
     L.control.locate().addTo(map);
 
-    // var directions = L.mapbox.directions();
-
-    // var directionsLayer = L.mapbox.directions.layer(directions).addTo(map);
-
     // var directionsInputControl = L.mapbox.directions.inputControl('inputs', directions).addTo(map);
+    var cl = function(ev) {
+      //console.log(ev);
+    };
+    map.on('click', cl);
+    // console.log(markers.origin);
+    // console.log(markers.destination);
+    // markers.origin.addTo(map);
+    // markers.destination.addTo(map);
+    //console.log(directionsLayer);
+    //this.drawRoute(map, markers);
+    //var directionsErrorsControl = L.mapbox.directions.errorsControl('errors', directions).addTo(map);
 
 
-    // var directionsErrorsControl = L.mapbox.directions.errorsControl('errors', directions).addTo(map);
-
-    // var directionsRoutesControl = L.mapbox.directions.routesControl('routes', directions).addTo(map);
-
-    // var directionsInstructionsControl = L.mapbox.directions.instructionsControl('instructions', directions).addTo(map);
+    //var directionsInstructionsControl = L.mapbox.directions.instructionsControl('instructions', directions).addTo(map);
 
     var date = $('#dp_ride').fdatepicker({
       format: 'mm-dd-yyyy',

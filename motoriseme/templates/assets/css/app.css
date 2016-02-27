@@ -303,6 +303,21 @@ body {
   padding: 0 !important;
 }
 
+#filter {
+  position: absolute;
+  z-index: 5;
+  top: 66px;
+  left: 0px;
+  width: 100%;
+}
+
+#expand-filter {
+  position: absolute;
+  z-index: 4;
+  top: 72px;
+  transition: 1s top;
+}
+
 .filter {
   height: 5px;
   transition: 1s height;
@@ -336,7 +351,7 @@ body {
   width: 44px;
   margin-left: -22px;
   margin-top: -5px;
-  padding-bottom: 4px;
+  padding-bottom: 5px;
   cursor: pointer;
 }
 

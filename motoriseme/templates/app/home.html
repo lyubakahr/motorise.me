@@ -12,6 +12,39 @@
         </ul>
       </div>
     </div>
+    
+    <div class="row">
+      <div class="dropdown-pane bottom" id="user-dropdown" data-dropdown data-auto-focus="true">
+        <ul class="menu vertical dropdown">
+          <li class="disabled"><a disabled>You</a></li>
+          <li><a href="" >Profile & Account</a></li>
+          <li><a href="" >Notifications</a></li>
+          <li><a href="" >Privacy</a></li>
+          <li><a href="" >Help & Feedback</a></li>
+          <hr>
+          <li class="disabled"><a disabled>Bikers</a></li>
+          <li><a href="" >Your Firends</a></li>
+          <li><a href="" >Search public profiles</a></li>
+          <hr>
+          <li class="disabled"><a disabled>Rides</a></li>
+          <li><a href="" >Upcoming</a></li>
+          <li><a href="" >Past</a></li>
+          <hr>
+          <li class="disabled"><a disabled>motorise.me</a></li>
+          <li><a href="/logout" >Logout</a></li>
+        </ul>
+      </div>
+    </div>
+    <!-- <div> -->
+    <!-- <div hidden id='inputs'></div> -->
+    <!-- <div id='errors'></div> -->
+<!--     <div hidden id='directions'> -->
+      <!-- <div hidden id='routes'></div> -->
+      <!-- <div hidden id='instructions'></div> -->
+   <!--  </div> -->
+    <div id="map" class="row expanded">
+    </div>
+    
     <div id="filter" class="row expanded filter closed">
       <div id="filter-content">
         <div class="row expanded">
@@ -95,37 +128,8 @@
       </div>
     </div>
 
-    <div class="row">
-      <div class="dropdown-pane bottom" id="user-dropdown" data-dropdown data-auto-focus="true">
-        <ul class="menu vertical dropdown">
-          <li class="disabled"><a disabled>You</a></li>
-          <li><a href="" >Profile & Account</a></li>
-          <li><a href="" >Notifications</a></li>
-          <li><a href="" >Privacy</a></li>
-          <li><a href="" >Help & Feedback</a></li>
-          <hr>
-          <li class="disabled"><a disabled>Bikers</a></li>
-          <li><a href="" >Your Firends</a></li>
-          <li><a href="" >Search public profiles</a></li>
-          <hr>
-          <li class="disabled"><a disabled>Rides</a></li>
-          <li><a href="" >Upcoming</a></li>
-          <li><a href="" >Past</a></li>
-          <hr>
-          <li class="disabled"><a disabled>motorise.me</a></li>
-          <li><a href="/logout" >Logout</a></li>
-        </ul>
-      </div>
-    </div>
-    <!-- <div> -->
-      <div hidden id='inputs'></div>
-      <div hidden id='errors'></div>
-      <div hidden id='directions'>
-        <div hidden id='routes'></div>
-        <div hidden id='instructions'></div>
-      </div>
-      <div id="map" class="row expanded">
-      </div>
+
+
       <div id="create-ride-holder" class="create-ride-holder">
         <div id="create-close-button" class="create-close-button">
           &#xf00d;
@@ -244,7 +248,7 @@
           <div class="row expanded">
             <div class="large-10 columns large-centered create-form-input">
               <span><span class="ride-prop-icon"> &#xf21c; </span><span class="ride-prop-text">Public ride</span></span>
-              <span><span class="ride-prop-icon"> &#xf1ae; </span><span class="ride-prop-text">Noob friendly</span></span>
+              <span id="nfSpan"><span class="ride-prop-icon"> &#xf1ae; </span><span class="ride-prop-text">Noob friendly</span></span>
             </div>
           </div>
           <div class="row expanded">
