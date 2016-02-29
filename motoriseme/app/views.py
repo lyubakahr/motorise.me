@@ -42,9 +42,9 @@ def create_event(request):
             event = Event(name = request.POST['ride_name'],
                           date = date,
                           start_point = request.POST['ride_start_point'],
-                          start_point_coordinates = 'start_point',#request.POST['start_point_coordinates'],
+                          start_point_coordinates = request.POST['start_point_coordinates'],
                           end_point = request.POST['ride_end_point'],
-                          end_point_coordinates = 'end_point', #request.POST['end_point_coordinates'],
+                          end_point_coordinates = request.POST['end_point_coordinates'],
                           description = 'description', #request.POST['description'],
                           noob_friendly = request.POST['noob_friendly'],
                           creator = request.user)
