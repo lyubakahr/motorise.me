@@ -340,6 +340,7 @@ window.addEventListener("load", function () {
             document.getElementById("view-header").innerHTML = result[0].name;
             document.getElementById("view-ride-start").innerHTML = result[0].start_point;
             document.getElementById("view-ride-finish").innerHTML = result[0].end_point;
+            document.getElementById("view-ride-date").innerHTML = result[0].date;
             if(result[0].noob_friendly) {
               document.getElementById("nfSpan").style.visibility = "visible";
             } else {
