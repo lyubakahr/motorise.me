@@ -325,6 +325,18 @@ window.addEventListener("load", function () {
           features: features
         });
         markerLayer.on('click', function(e) {
+          var images = [
+            "http://www.centralcontracts.com/news/wp-content/uploads/motorbike.jpg",
+            "http://ricksmotorsportelectrics.com/tips/assets/uploads/Motorcycle-Riding-Photo.jpg",
+            "http://www.cycleright.com.au/wp-content/uploads/2011/09/Bikes-Lineup-1.jpg",
+            "http://www.lazymotorbike.eu/tips/distance/cornering.jpg",
+            "http://motorbikewriter.com/wp-content/uploads/2013/07/riders.jpg",
+            "http://www.bull-it.com/wp-content/uploads/2014/04/Angelina-Jolie.jpg"
+          ];
+          var image = images[Math.floor(Math.random() * (5 - 0) + 0)];
+          console.log(image);
+          document.getElementById("view-image-img").src = image;
+
           map.panTo(e.layer.getLatLng());
           //console.log(e);
           var marker = e.layer.feature;
@@ -340,7 +352,7 @@ window.addEventListener("load", function () {
             document.getElementById("view-header").innerHTML = result[0].name;
             document.getElementById("view-ride-start").innerHTML = result[0].start_point;
             document.getElementById("view-ride-finish").innerHTML = result[0].end_point;
-            document.getElementById("view-ride-date").innerHTML = result[0].date;
+            document.getElementById("view-ride-date").innerHTML = result[0].date.slice(0, -9);
             if(result[0].noob_friendly) {
               document.getElementById("nfSpan").style.visibility = "visible";
             } else {
@@ -420,7 +432,10 @@ window.addEventListener("load", function () {
     var imgInfo = document.getElementById("gauge-info-img");
     var imgArrow = document.getElementById("gauge-arrow-img");
     var drawDegrees = function() {
-      var degrees = 53;
+      var max = 70;
+      var min = 50;
+      var degrees = Math.floor(Math.random() * (max - min) + min);
+      document.getElementById("maxlean").innerHTML = degrees + "&deg;";
       var i = 0;
       var refreshIntervalId = setInterval(function() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
